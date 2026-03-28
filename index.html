@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>workpts — terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0e0a;--bg2:#0d120d;--green:#39ff6a;--green-dim:#1a7a30;
+  --green-faint:rgba(57,255,106,0.07);--amber:#e8b84b;--red:#ff4f4f;
+  --cyan:#4fffd4;--muted:#3a6640;--text:#b8f0c0;--border:#1e3a22;--border2:#2a5030;
+  --font:'JetBrains Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.5;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.13) 2px,rgba(0,0,0,0.13) 4px);}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.45) 100%);}
+
+.titlebar{background:#0d120d;border-bottom:1px solid var(--border2);padding:0 1rem;display:flex;align-items:center;position:sticky;top:0;z-index:100;user-select:none;}
+.titlebar-dots{display:flex;gap:6px;margin-right:1rem;padding:12px 0;}
+.dot{width:12px;height:12px;border-radius:50%;}
+.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+.titlebar-title{color:var(--muted);font-size:12px;flex:1;text-align:center;letter-spacing:0.05em;}
+.titlebar-title span{color:var(--green);}
+.tab{padding:10px 16px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color 0.1s;letter-spacing:0.03em;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--green);border-bottom-color:var(--green);}
+
+.terminal{max-width:900px;margin:0 auto;padding:1.5rem 1rem;}
+.window{border:1px solid var(--border2);border-radius:4px;margin-bottom:1.5rem;background:var(--bg2);overflow:hidden;}
+.window-bar{background:#0d150d;border-bottom:1px solid var(--border);padding:6px 12px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.window-bar .path{color:var(--green);}
+.window-body{padding:1rem 1.25rem;}
+
+.prompt-line{display:flex;align-items:baseline;gap:8px;margin-bottom:0.5rem;flex-wrap:wrap;}
+.ps1-user{color:var(--green);font-weight:700;}
+.ps1-host{color:var(--cyan);}
+.ps1-path{color:var(--amber);}
+.ps1-sym{color:var(--green);}
+.cmd-text{color:var(--text);}
+.output{margin-bottom:1rem;}
+.output-line{display:block;color:var(--text);padding:1px 0;}
+.output-dim{color:var(--muted);}
+
+input,select{background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--green);font-family:var(--font);font-size:13px;padding:3px 6px;outline:none;caret-color:var(--green);width:100%;transition:border-color 0.15s;}
+input:focus,select:focus{border-bottom-color:var(--green);}
+input::placeholder{color:var(--muted);}
+select option{background:#0a0e0a;color:var(--text);}
+
+.btn{background:transparent;border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:4px 12px;cursor:pointer;transition:all 0.1s;letter-spacing:0.03em;white-space:nowrap;}
+.btn:hover{border-color:var(--green-dim);color:var(--green);background:var(--green-faint);}
+.btn-green{border-color:var(--green-dim);color:var(--green);}
+.btn-green:hover{background:rgba(57,255,106,0.12);}
+.btn-red{color:var(--red);border-color:rgba(255,79,79,0.3);}
+.btn-red:hover{background:rgba(255,79,79,0.08);}
+.btn-amber{color:var(--amber);border-color:rgba(232,184,75,0.3);}
+.btn-amber:hover{background:rgba(232,184,75,0.08);}
+
+.term-table{width:100%;border-collapse:collapse;font-size:12px;}
+.term-table th{color:var(--muted);font-weight:500;text-align:left;padding:4px 12px 8px;letter-spacing:0.08em;font-size:11px;border-bottom:1px solid var(--border);text-transform:uppercase;}
+.term-table td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.term-table tr:last-child td{border-bottom:none;}
+.term-table tr:hover td{background:var(--green-faint);}
+.term-table tr.me-row td{background:rgba(57,255,106,0.04);}
+.rank-badge{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border:1px solid var(--border2);color:var(--muted);min-width:36px;text-align:center;}
+.rank-1{color:var(--amber);border-color:rgba(232,184,75,0.4);}
+.rank-2{color:#c0c0c0;border-color:rgba(192,192,192,0.3);}
+.rank-3{color:#cd7f32;border-color:rgba(205,127,50,0.3);}
+.prog-full{color:var(--green);}
+.prog-empty{color:var(--muted);}
+
+.podium-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin:8px 0;}
+.podium-cell{background:var(--bg2);padding:12px 14px;text-align:center;}
+.podium-cell.p1{background:rgba(232,184,75,0.05);}
+.podium-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.podium-pts{font-size:18px;font-weight:700;}
+.p1 .podium-pts{color:var(--amber);}
+.p2 .podium-pts{color:#c0c0c0;}
+.p3 .podium-pts{color:#cd7f32;}
+.podium-tasks{font-size:11px;color:var(--muted);}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--border);margin-bottom:1.5rem;background:var(--border);}
+.stat-cell{background:var(--bg2);padding:12px 14px;}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
+.stat-val{font-size:20px;font-weight:700;color:var(--green);}
+.stat-val.dim{color:var(--text);}
+
+.task-entry{border-left:2px solid var(--border);padding:8px 0 8px 14px;margin-bottom:8px;transition:border-color 0.15s;}
+.task-entry:hover{border-left-color:var(--green-dim);}
+.task-entry.editing{border-left-color:var(--green);}
+.task-entry-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.task-name-text{color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.task-pts-badge{color:var(--green);font-weight:700;font-size:14px;white-space:nowrap;}
+.task-meta-line{font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:12px;flex-wrap:wrap;}
+.diff-tag{font-size:11px;padding:0 6px;border:1px solid;}
+.d-easy{color:var(--green);border-color:var(--green-dim);}
+.d-medium{color:var(--amber);border-color:rgba(232,184,75,0.4);}
+.d-hard{color:#ff8c42;border-color:rgba(255,140,66,0.4);}
+.d-expert{color:#ff6ecb;border-color:rgba(255,110,203,0.4);}
+.task-edit-grid{display:grid;grid-template-columns:1fr 80px 170px;gap:10px;margin-top:8px;align-items:end;}
+
+.gate{padding:2rem 0;}
+.gate-ascii{color:var(--green-dim);line-height:1.3;font-size:11px;margin-bottom:1.5rem;white-space:pre;}
+.cursor-blink{display:inline-block;width:8px;height:14px;background:var(--green);animation:cblink 1s step-end infinite;vertical-align:text-bottom;margin-left:1px;}
+@keyframes cblink{50%{opacity:0;}}
+.typewriter{overflow:hidden;white-space:nowrap;border-right:2px solid var(--green);animation:ttype 1s steps(36) forwards,tblink 0.8s step-end infinite 1s;width:0;display:inline-block;}
+@keyframes ttype{to{width:100%;}}
+@keyframes tblink{50%{border-color:transparent;}}
+.cmd-form{display:flex;align-items:center;gap:0;border:1px solid var(--border2);background:var(--bg);padding:6px 10px;margin-bottom:1rem;}
+.cmd-form:focus-within{border-color:var(--green-dim);}
+.cmd-form input{border:none;flex:1;padding:0;}
+
+/* connecting screen */
+.connecting{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;padding:2rem 0;}
+.spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg2);border:1px solid var(--border2);padding:8px 14px;font-size:12px;color:var(--text);transform:translateY(60px);opacity:0;transition:all 0.2s;z-index:9000;pointer-events:none;max-width:260px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.ok{border-color:var(--green-dim);color:var(--green);}
+#toast.err{border-color:rgba(255,79,79,0.4);color:var(--red);}
+
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);}
+::-webkit-scrollbar-thumb:hover{background:var(--green-dim);}
+
+@media(max-width:600px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .podium-row{grid-template-columns:1fr;}
+  .task-edit-grid{grid-template-columns:1fr 1fr;}
+  .titlebar-title{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <div class="titlebar-dots">
+    <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+  </div>
+  <div class="tab active" onclick="switchTab('leaderboard')">leaderboard</div>
+  <div class="tab" onclick="switchTab('mytasks')">my-tasks</div>
+  <div class="titlebar-title">workpts@<span>terminal</span> — bash</div>
+  <div id="userIndicator" style="font-size:11px;color:var(--muted);padding:0 1rem;"></div>
+</div>
+
+<div class="terminal">
+
+  <!-- LEADERBOARD -->
+  <div id="view-leaderboard">
+    <div class="window">
+      <div class="window-bar">
+        <span class="path">~/workpts</span>&nbsp;$&nbsp;
+        <span style="color:var(--text)">cat leaderboard.txt</span>
+        <span style="margin-left:auto" id="lbTime"></span>
+      </div>
+      <div class="window-body">
+        <div class="prompt-line">
+          <span class="ps1-user">root</span><span class="ps1-host">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-path">~/leaderboard</span><span class="ps1-sym">$</span>
+          <span class="cmd-text">./show_rankings.sh --podium --all --watch</span>
+        </div>
+        <div id="lbOut">
+          <div class="connecting"><div class="spinner"></div>connecting to firebase...</div>
+        </div>
+        <div class="prompt-line" style="margin-top:0.5rem">
+          <span class="ps1-user">root</span><span class="ps1-host">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-path">~/leaderboard</span><span class="ps1-sym">$</span>
+          <span class="cursor-blink"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY TASKS -->
+  <div id="view-mytasks" style="display:none">
+
+    <div id="gateView">
+      <div class="window">
+        <div class="window-bar">
+          <span class="path">~/workpts</span>&nbsp;$&nbsp;<span style="color:var(--text)">./login.sh</span>
+        </div>
+        <div class="window-body gate">
+<div class="gate-ascii"><span style="color:var(--green)"> __    __ ___  ____  __ __ ____  ____  _____
+ \ \  / // _ \|  _ \|  |/ /|  _ \|_  _|/ ___/
+  \ \/ /| | | | |_) |     / | |_) | | | \___ \
+   \  / | |_| |  _ &lt;| |\ \ |  __/  | |  ___) |
+    \/   \___/|_| \_|_| \_||_|    |___||____/ </span></div>
+          <div class="prompt-line" style="margin-bottom:0.75rem">
+            <span class="ps1-user">root</span><span class="ps1-host">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-path">~</span><span class="ps1-sym">$</span>
+            <span class="typewriter cmd-text">./login.sh --identify</span>
+          </div>
+          <div class="output" style="margin-bottom:1rem">
+            <span class="output-line output-dim"># Enter your username to begin. New users created automatically.</span>
+            <span class="output-line output-dim"># Data is stored in Firebase and shared across all users.</span>
+          </div>
+          <div class="cmd-form">
+            <span class="ps1-sym" style="color:var(--green);margin-right:8px">$&nbsp;</span>
+            <input type="text" id="nameInput" placeholder="type your name and press enter..." maxlength="30"
+              onkeydown="if(event.key==='Enter')setUser()" autocomplete="off" />
+            <button class="btn btn-green" onclick="setUser()" style="border:none;padding:0 10px;">&#x21B5;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tasksView" style="display:none">
+      <div class="window">
+        <div class="window-bar">
+          <span class="path" id="tvPath">~/workpts/users/—</span>&nbsp;$&nbsp;<span style="color:var(--text)">./my_stats.sh</span>
+        </div>
+        <div class="window-body">
+          <div class="prompt-line">
+            <span class="ps1-user" id="tvUser">user</span><span class="ps1-host">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-path">~/tasks</span><span class="ps1-sym">$</span>
+            <span class="cmd-text">cat stats.json | jq .</span>
+          </div>
+          <div class="stats-row" id="statsRow">
+            <div class="stat-cell"><div class="stat-label">total_pts</div><div class="stat-val">0</div></div>
+            <div class="stat-cell"><div class="stat-label">tasks</div><div class="stat-val dim">0</div></div>
+            <div class="stat-cell"><div class="stat-label">avg_pts</div><div class="stat-val dim">0</div></div>
+            <div class="stat-cell"><div class="stat-label">rank</div><div class="stat-val dim">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="window">
+        <div class="window-bar">
+          <span class="path" id="tvPath2">~/workpts/users/—</span>&nbsp;$&nbsp;<span style="color:var(--text)">./add_task.sh --interactive</span>
+        </div>
+        <div class="window-body">
+          <div class="output-line output-dim" style="margin-bottom:0.75rem;font-size:12px;"># Usage: add_task --name &lt;str&gt; --units &lt;int&gt; --difficulty &lt;easy|medium|hard|expert&gt;</div>
+          <div style="display:grid;grid-template-columns:1fr 90px 180px auto;gap:12px;align-items:end;">
+            <div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">--name</div>
+              <input type="text" id="newName" placeholder="task description..." maxlength="80" onkeydown="if(event.key==='Enter')addTask()" />
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">--units</div>
+              <input type="number" id="newUnits" value="1" min="1" max="999" style="width:100%" />
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">--difficulty</div>
+              <select id="newDiff">
+                <option value="1">easy    (x1.0)</option>
+                <option value="1.5">medium  (x1.5)</option>
+                <option value="2.5">hard    (x2.5)</option>
+                <option value="4">expert  (x4.0)</option>
+              </select>
+            </div>
+            <button class="btn btn-green" onclick="addTask()">./run</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="window">
+        <div class="window-bar">
+          <span class="path" id="tvPath3">~/workpts/users/—</span>&nbsp;$&nbsp;<span style="color:var(--text)">ls -la tasks/</span>
+        </div>
+        <div class="window-body">
+          <div class="prompt-line" style="margin-bottom:1rem">
+            <span class="ps1-user" id="tvUser2">user</span><span class="ps1-host">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-path">~/tasks</span><span class="ps1-sym">$</span>
+            <span class="cmd-text">cat tasks/*.log</span>
+          </div>
+          <div id="tasksList"></div>
+          <div class="prompt-line" style="margin-top:0.5rem">
+            <span class="ps1-user" id="tvUser3">user</span><span class="ps1-host">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-path">~/tasks</span><span class="ps1-sym">$</span>
+            <span class="cursor-blink"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- Firebase v9 compat (works as plain script tags, no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ── Firebase init ──────────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey: "AIzaSyDtjWUKd4ieA_sorxiboe8B0CCKZk5CR78",
+  authDomain: "productivity-game-2541e.firebaseapp.com",
+  projectId: "productivity-game-2541e",
+  storageBucket: "productivity-game-2541e.firebasestorage.app",
+  messagingSenderId: "366980877812",
+  appId: "1:366980877812:web:34d0df0519b94e50d43da1"
+});
+const db = firebase.firestore();
+const usersCol = db.collection('users');
+
+// ── State ──────────────────────────────────────────────────────────────────
+let currentUser = null;
+let allData = {};   // { username: { tasks: [] } }
+let unsubscribe = null;
+
+const DIFF_LABELS = {'1':'easy','1.5':'medium','2.5':'hard','4':'expert'};
+const DIFF_CLS    = {'1':'d-easy','1.5':'d-medium','2.5':'d-hard','4':'d-expert'};
+
+// ── Scoring ────────────────────────────────────────────────────────────────
+function calcPoints(tasks) {
+  let total = 0, hist = [];
+  for (const t of tasks) {
+    const base = t.units * parseFloat(t.diff) * 10;
+    const avg = hist.length ? hist.reduce((a,b)=>a+b,0)/hist.length : null;
+    const bonus = (avg !== null && base > avg) ? Math.round((base - avg) * 0.3) : 0;
+    hist.push(base);
+    total += Math.round(base + bonus);
+  }
+  return total;
+}
+function tPts(t, i, all) {
+  const base = t.units * parseFloat(t.diff) * 10;
+  const prior = all.slice(0, i);
+  if (!prior.length) return Math.round(base);
+  const avg = prior.map(x => x.units * parseFloat(x.diff) * 10).reduce((a,b)=>a+b,0) / prior.length;
+  return Math.round(base + (base > avg ? Math.round((base - avg) * 0.3) : 0));
+}
+function tBonus(t, i, all) {
+  const base = t.units * parseFloat(t.diff) * 10;
+  const prior = all.slice(0, i);
+  if (!prior.length) return 0;
+  const avg = prior.map(x => x.units * parseFloat(x.diff) * 10).reduce((a,b)=>a+b,0) / prior.length;
+  return base > avg ? Math.round((base - avg) * 0.3) : 0;
+}
+function progBar(pct, len=18) {
+  const f = Math.round((pct/100)*len);
+  return `<span class="prog-full">${'█'.repeat(f)}</span><span class="prog-empty">${'░'.repeat(len-f)}</span> ${pct}%`;
+}
+
+// ── Firebase live listener ─────────────────────────────────────────────────
+function startListener() {
+  if (unsubscribe) unsubscribe();
+  unsubscribe = usersCol.onSnapshot(snap => {
+    allData = {};
+    snap.forEach(doc => { allData[doc.id] = doc.data(); });
+    renderLeaderboard();
+    if (currentUser) renderMyTasks();
+  }, err => {
+    document.getElementById('lbOut').innerHTML =
+      `<span class="output-line" style="color:var(--red)"># firestore error: ${err.message}</span>
+       <span class="output-line output-dim"># check your Firestore rules — set allow read, write: if true;</span>`;
+  });
+}
+
+// ── Save current user's tasks to Firestore ─────────────────────────────────
+async function saveUser() {
+  if (!currentUser) return;
+  await usersCol.doc(currentUser).set({ tasks: allData[currentUser].tasks });
+}
+
+// ── Tab switching ──────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) =>
+    t.classList.toggle('active', ['leaderboard','mytasks'][i] === tab));
+  document.getElementById('view-leaderboard').style.display = tab==='leaderboard' ? 'block' : 'none';
+  document.getElementById('view-mytasks').style.display     = tab==='mytasks'     ? 'block' : 'none';
+}
+
+// ── Login ──────────────────────────────────────────────────────────────────
+async function setUser() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) return;
+  currentUser = name;
+  if (!allData[name]) {
+    allData[name] = { tasks: [] };
+    await saveUser();
+  }
+  document.getElementById('gateView').style.display  = 'none';
+  document.getElementById('tasksView').style.display = 'block';
+  const slug = name.toLowerCase().replace(/\s+/g,'_');
+  ['tvPath','tvPath2','tvPath3'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=`~/workpts/users/${slug}`; });
+  ['tvUser','tvUser2','tvUser3'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=slug; });
+  document.getElementById('userIndicator').textContent = `[${name}]`;
+  renderMyTasks();
+}
+
+// ── Leaderboard render ─────────────────────────────────────────────────────
+function renderLeaderboard() {
+  const entries = Object.entries(allData)
+    .map(([n,d]) => ({ name:n, points:calcPoints(d.tasks||[]), tasks:(d.tasks||[]).length }))
+    .sort((a,b) => b.points - a.points);
+
+  document.getElementById('lbTime').textContent = new Date().toLocaleTimeString();
+  const out = document.getElementById('lbOut');
+
+  if (!entries.length) {
+    out.innerHTML = `<span class="output-line output-dim"># no participants yet — log tasks to appear here</span>`;
+    return;
+  }
+
+  const maxPts = entries[0].points || 1;
+  const top3 = [entries[0], entries[1], entries[2]];
+  const order=[1,0,2], syms=['  2nd','★ 1st','  3rd'], pCls=['p2','p1','p3'], pColors=['#c0c0c0','var(--amber)','#cd7f32'];
+
+  let html = `<span class="output-line output-dim" style="margin-bottom:6px"># ── TOP 3 ──────────────────────────────────────────</span>`;
+  html += `<div class="podium-row">`;
+  order.forEach((ri,ci) => {
+    const e = top3[ri];
+    if (!e) { html += `<div class="podium-cell"></div>`; return; }
+    const isMe = e.name === currentUser;
+    html += `<div class="podium-cell ${pCls[ci]}">
+      <div style="font-size:12px;color:${pColors[ci]};margin-bottom:4px">${syms[ci]}</div>
+      <div class="podium-name">${e.name}${isMe?' ◆':''}</div>
+      <div class="podium-pts">${e.points.toLocaleString()}</div>
+      <div class="podium-tasks">${e.tasks} task${e.tasks!==1?'s':''}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<span class="output-line output-dim" style="margin:8px 0 6px;display:block"># ── FULL RANKINGS ──────────────────────────────────</span>`;
+  html += `<table class="term-table"><thead><tr><th>rank</th><th>username</th><th>points</th><th>tasks</th><th>progress</th></tr></thead><tbody>`;
+  entries.forEach((e,i) => {
+    const isMe = e.name === currentUser;
+    const pct  = Math.round((e.points / maxPts) * 100);
+    const rc   = i < 3 ? `rank-${i+1}` : '';
+    html += `<tr class="${isMe?'me-row':''}">
+      <td><span class="rank-badge ${rc}">${i<3?['#1','#2','#3'][i]:`#${i+1}`}</span></td>
+      <td><span style="color:${isMe?'var(--green)':'var(--text)'};font-weight:${isMe?700:400}">${e.name}${isMe?' ◆':''}</span></td>
+      <td><span style="color:var(--green);font-weight:700">${e.points.toLocaleString()}</span><span class="output-dim"> pts</span></td>
+      <td class="output-dim">${e.tasks}</td>
+      <td>${progBar(pct)}</td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+  out.innerHTML = html;
+}
+
+// ── My tasks render ────────────────────────────────────────────────────────
+function renderMyTasks() {
+  if (!currentUser || !allData[currentUser]) return;
+  const tasks = allData[currentUser].tasks || [];
+  const totalPts = calcPoints(tasks);
+  const sorted = Object.entries(allData)
+    .map(([n,d]) => ({ n, pts: calcPoints(d.tasks||[]) }))
+    .sort((a,b) => b.pts - a.pts);
+  const rank = sorted.findIndex(e => e.n === currentUser) + 1;
+  const avg  = tasks.length ? Math.round(totalPts / tasks.length) : 0;
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-cell"><div class="stat-label">total_pts</div><div class="stat-val">${totalPts.toLocaleString()}</div></div>
+    <div class="stat-cell"><div class="stat-label">tasks</div><div class="stat-val dim">${tasks.length}</div></div>
+    <div class="stat-cell"><div class="stat-label">avg_pts</div><div class="stat-val dim">${avg}</div></div>
+    <div class="stat-cell"><div class="stat-label">rank</div><div class="stat-val dim">#${rank||'—'}</div></div>`;
+
+  const list = document.getElementById('tasksList');
+  if (!tasks.length) {
+    list.innerHTML = `<span class="output-line output-dim"># no tasks — use ./add_task.sh above</span>`;
+    return;
+  }
+  list.innerHTML = tasks.map((t,i) => {
+    const pts   = tPts(t,i,tasks);
+    const bonus = tBonus(t,i,tasks);
+    const dc    = DIFF_CLS[String(t.diff)] || 'd-easy';
+    const dl    = DIFF_LABELS[String(t.diff)] || 'easy';
+    return `<div class="task-entry" id="te-${i}">
+      <div id="tv-${i}">
+        <div class="task-entry-head">
+          <span class="output-dim" style="font-size:11px;flex-shrink:0">[${String(i+1).padStart(2,'0')}]</span>
+          <span class="task-name-text">${t.name}</span>
+          <span class="task-pts-badge">${pts} pts</span>
+          <button class="btn btn-amber" style="font-size:11px;padding:2px 8px" onclick="startEdit(${i})">--edit</button>
+          <button class="btn btn-red"   style="font-size:11px;padding:2px 8px" onclick="deleteTask(${i})">rm</button>
+        </div>
+        <div class="task-meta-line">
+          <span>units=${t.units}</span>
+          <span class="diff-tag ${dc}">${dl}</span>
+          <span>x${t.diff}</span>
+          ${bonus>0?`<span style="color:var(--cyan)">+${bonus} efficiency_bonus</span>`:''}
+        </div>
+      </div>
+      <div id="ee-${i}" style="display:none">
+        <div class="task-edit-grid">
+          <div><div style="font-size:11px;color:var(--muted);margin-bottom:2px">--name</div>
+            <input type="text" id="en-${i}" value="${t.name.replace(/"/g,'&quot;')}" maxlength="80"/></div>
+          <div><div style="font-size:11px;color:var(--muted);margin-bottom:2px">--units</div>
+            <input type="number" id="eu-${i}" value="${t.units}" min="1" max="999"/></div>
+          <div><div style="font-size:11px;color:var(--muted);margin-bottom:2px">--difficulty</div>
+            <select id="ed-${i}">
+              ${[['1','easy (x1.0)'],['1.5','medium (x1.5)'],['2.5','hard (x2.5)'],['4','expert (x4.0)']]
+                .map(([v,l])=>`<option value="${v}"${String(t.diff)===v?' selected':''}>${l}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-green" style="font-size:11px;padding:3px 12px" onclick="saveEdit(${i})">./save.sh</button>
+          <button class="btn"           style="font-size:11px;padding:3px 12px" onclick="cancelEdit(${i})">^C cancel</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Task CRUD ──────────────────────────────────────────────────────────────
+function startEdit(i) {
+  document.getElementById('tv-'+i).style.display = 'none';
+  document.getElementById('ee-'+i).style.display = 'block';
+  document.getElementById('te-'+i).classList.add('editing');
+  document.getElementById('en-'+i).focus();
+}
+function cancelEdit(i) {
+  document.getElementById('tv-'+i).style.display = 'block';
+  document.getElementById('ee-'+i).style.display = 'none';
+  document.getElementById('te-'+i).classList.remove('editing');
+}
+async function saveEdit(i) {
+  const name  = document.getElementById('en-'+i).value.trim();
+  const units = parseInt(document.getElementById('eu-'+i).value) || 1;
+  const diff  = document.getElementById('ed-'+i).value;
+  if (!name) { toast('error: name cannot be empty','err'); return; }
+  allData[currentUser].tasks[i] = { ...allData[currentUser].tasks[i], name, units, diff };
+  await saveUser();
+  toast('[OK] task updated','ok');
+}
+async function deleteTask(i) {
+  if (!confirm(`rm tasks[${i}]?`)) return;
+  allData[currentUser].tasks.splice(i, 1);
+  await saveUser();
+  toast('[OK] task removed','ok');
+}
+async function addTask() {
+  if (!currentUser) return;
+  const name  = document.getElementById('newName').value.trim();
+  const units = parseInt(document.getElementById('newUnits').value) || 1;
+  const diff  = document.getElementById('newDiff').value;
+  if (!name) { toast('error: --name is required','err'); return; }
+  allData[currentUser].tasks.push({ name, units, diff, ts: Date.now() });
+  await saveUser();
+  document.getElementById('newName').value  = '';
+  document.getElementById('newUnits').value = '1';
+  toast('[OK] task logged','ok');
+}
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+let toastT;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = '$ ' + msg;
+  el.className = 'show' + (type ? ' '+type : '');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => { el.className = ''; }, 2500);
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+startListener();
+</script>
+</body>
+</html>
