@@ -172,6 +172,7 @@ let passwordCallback = null;
 let cmdHistory = [], histIdx = -1, draftCmd = '';
 let allData = {};
 let liveUnsub = null;
+let lastView = null; // track which view is currently showing
 
 const DIFF_LABELS={'1':'easy','1.5':'medium','2.5':'hard','4':'expert'};
 const DIFF_CLS={'1':'d-easy','1.5':'d-medium','2.5':'d-hard','4':'d-expert'};
@@ -223,9 +224,12 @@ function startLive(){
   if(liveUnsub)liveUnsub();
   liveUnsub=usersCol.onSnapshot(snap=>{
     snap.forEach(doc=>{allData[doc.id]=doc.data();});
-    // if leaderboard is currently shown, refresh it silently
     const lbEl=document.getElementById('live-lb');
     if(lbEl)lbEl.innerHTML=buildLbTable();
+    const podEl=document.getElementById('live-podium');
+    if(podEl)podEl.innerHTML=buildPodiumCells();
+    const clEl=document.getElementById('live-tasks');
+    if(clEl)clEl.innerHTML=buildChecklistHTML();
   });
 }
 
@@ -354,30 +358,13 @@ const COMMANDS={
   leaderboard(){
     blank();
     print('<span class="line-dim"># ── live leaderboard ─────────────────────────────</span>');
-    const entries=Object.entries(allData)
-      .filter(([,d])=>d.passwordHash)
-      .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
-      .sort((a,b)=>b.points-a.points);
-    if(!entries.length){print('no participants yet','line-dim');blank();return;}
-    const maxPts=entries[0].points||1;
-    const top3=[entries[0],entries[1],entries[2]];
-    const order=[1,0,2],syms=['  2nd','★ 1st','  3rd'],pCls=['p2','p1','p3'],pColors=['#c0c0c0','var(--amber)','#cd7f32'];
-    const pod=document.createElement('div');
-    pod.className='podium';
-    order.forEach((ri,ci)=>{
-      const e=top3[ri];const cell=document.createElement('div');cell.className='pc '+pCls[ci];
-      if(e){
-        const isMe=e.name===session.user;
-        cell.innerHTML=`<div class="pc-sym" style="color:${pColors[ci]}">${syms[ci]}</div>
-          <div class="pc-name">${e.name}${isMe?' ◆':''}</div>
-          <div class="pc-pts">${e.points.toLocaleString()}</div>
-          <div class="pc-tasks">${e.done}/${e.tasks} done</div>`;
-      }
-      pod.appendChild(cell);
-    });
-    appendEl(pod);
+    // podium wrapper with stable id so live listener can update it
+    const podWrap=document.createElement('div');podWrap.id='live-podium';
+    podWrap.innerHTML=buildPodiumCells();
+    appendEl(podWrap);
+    // table wrapper with stable id
     const wrap=document.createElement('div');wrap.id='live-lb';
-    wrap.innerHTML=buildLbTable(entries,maxPts);
+    wrap.innerHTML=buildLbTable();
     appendEl(wrap);
     blank();
   },
@@ -387,27 +374,11 @@ const COMMANDS={
     const tasks=allData[session.user]?.tasks||[];
     blank();
     print(`<span class="line-dim"># ── task list for <span style="color:var(--green)">${session.user}</span> ─────────────────</span>`);
-    print(`<span class="line-dim"># total: ${calcPoints(tasks)} pts | ${tasks.filter(t=>t.done).length}/${tasks.length} completed</span>`);
-    print('<span class="line-dim"># use "check &lt;#&gt;" to complete a task, "add &lt;name&gt;" to add one</span>');
+    print('<span class="line-dim"># use "check &lt;#&gt;" to complete a task, click a row, or "add &lt;name&gt;" to add one</span>');
     blank();
-    if(!tasks.length){print('no tasks yet — add one with: add &lt;task name&gt; [units] [difficulty]','line-dim');blank();return;}
-    const cl=document.createElement('div');cl.className='checklist';
-    tasks.forEach((t,i)=>{
-      const pts=taskPts(t,t.done,tasks);
-      const dc=DIFF_CLS[String(t.diff)]||'d-easy';
-      const dl=DIFF_LABELS[String(t.diff)]||'easy';
-      const row=document.createElement('div');row.className='check-row';
-      row.innerHTML=`
-        <div class="cb${t.done?' checked':''}">${t.done?'✓':''}</div>
-        <span class="line-dim" style="font-size:11px;flex-shrink:0">[${String(i+1).padStart(2,'0')}]</span>
-        <span class="check-name${t.done?' done':''}">${t.name}</span>
-        <span class="check-diff ${dc}">${dl}</span>
-        <span class="line-dim" style="font-size:11px">×${t.units}</span>
-        <span class="check-pts">${t.done?pts:'+'+pts} pts</span>`;
-      row.onclick=()=>runCmd(t.done?`uncheck ${i+1}`:`check ${i+1}`);
-      cl.appendChild(row);
-    });
-    appendEl(cl);
+    const clWrap=document.createElement('div');clWrap.id='live-tasks';
+    clWrap.innerHTML=buildChecklistHTML();
+    appendEl(clWrap);
     blank();
   },
 
@@ -440,7 +411,6 @@ const COMMANDS={
     if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found — use "tasks" to see your list`,'line-err');return;}
     if(tasks[idx].done){print(`task #${args[0]} is already done — use "uncheck ${args[0]}" to undo`,'line-dim');return;}
     tasks[idx].done=true;
-    await usersCol.doc(session.user).set({tasks},({}),{merge:true});
     await usersCol.doc(session.user).set({tasks},{merge:true});
     const pts=taskPts(tasks[idx],true,tasks);
     blank();
@@ -480,14 +450,62 @@ const COMMANDS={
   clear(){clearOut();}
 };
 
+function buildPodiumCells(){
+  const entries=Object.entries(allData)
+    .filter(([,d])=>d.passwordHash)
+    .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
+    .sort((a,b)=>b.points-a.points);
+  if(!entries.length) return '<span class="line-dim"># no participants yet</span>';
+  const top3=[entries[0],entries[1],entries[2]];
+  const order=[1,0,2],syms=['  2nd','★ 1st','  3rd'],pCls=['p2','p1','p3'],pColors=['#c0c0c0','var(--amber)','#cd7f32'];
+  let html='<div class="podium">';
+  order.forEach((ri,ci)=>{
+    const e=top3[ri];
+    if(!e){html+='<div class="pc"></div>';return;}
+    const isMe=e.name===session.user;
+    html+=`<div class="pc ${pCls[ci]}">
+      <div class="pc-sym" style="color:${pColors[ci]}">${syms[ci]}</div>
+      <div class="pc-name">${e.name}${isMe?' ◆':''}</div>
+      <div class="pc-pts">${e.points.toLocaleString()}</div>
+      <div class="pc-tasks">${e.done}/${e.tasks} done</div>
+    </div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+function buildChecklistHTML(){
+  if(!session.user) return '';
+  const tasks=allData[session.user]?.tasks||[];
+  const total=calcPoints(tasks);
+  const doneCount=tasks.filter(t=>t.done).length;
+  let html=`<span class="line-dim" style="display:block;margin-bottom:6px"># total: ${total} pts | ${doneCount}/${tasks.length} completed</span>`;
+  if(!tasks.length) return html+'<span class="line-dim">no tasks yet — add one with: add &lt;task name&gt; [units] [difficulty]</span>';
+  html+='<div class="checklist">';
+  tasks.forEach((t,i)=>{
+    const pts=taskPts(t,t.done,tasks);
+    const dc=DIFF_CLS[String(t.diff)]||'d-easy';
+    const dl=DIFF_LABELS[String(t.diff)]||'easy';
+    const action=t.done?`uncheck ${i+1}`:`check ${i+1}`;
+    html+=`<div class="check-row" onclick="runCmd('${action}')">
+      <div class="cb${t.done?' checked':''}">${t.done?'✓':''}</div>
+      <span class="line-dim" style="font-size:11px;flex-shrink:0">[${String(i+1).padStart(2,'0')}]</span>
+      <span class="check-name${t.done?' done':''}">${t.name}</span>
+      <span class="check-diff ${dc}">${dl}</span>
+      <span class="line-dim" style="font-size:11px">x${t.units}</span>
+      <span class="check-pts">${t.done?pts:'+'+pts} pts</span>
+    </div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
 function buildLbTable(entries,maxPts){
-  if(!entries){
-    entries=Object.entries(allData)
-      .filter(([,d])=>d.passwordHash)
-      .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
-      .sort((a,b)=>b.points-a.points);
-    maxPts=entries[0]?.points||1;
-  }
+  entries=entries||Object.entries(allData)
+    .filter(([,d])=>d.passwordHash)
+    .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
+    .sort((a,b)=>b.points-a.points);
+  maxPts=maxPts||entries[0]?.points||1;
   let t=`<table class="t-table"><thead><tr><th>rank</th><th>user</th><th>pts</th><th>done/total</th><th>progress</th></tr></thead><tbody>`;
   entries.forEach((e,i)=>{
     const isMe=e.name===session.user;
