@@ -29,87 +29,60 @@
 }
 :root{--amber:#e8b84b;--red:#ff4f4f;--cyan:#4fffd4;--font:'JetBrains Mono',monospace;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;overflow:hidden;}
-
-/* CRT */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.5) 100%);}
 
-/* TITLEBAR */
-.titlebar{
-  height:38px;background:var(--titlebar);border-bottom:1px solid var(--border2);
-  display:flex;align-items:center;padding:0 1rem;flex-shrink:0;user-select:none;
-}
-.dots{display:flex;gap:6px;margin-right:12px;}
+.titlebar{height:38px;background:var(--titlebar);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 1rem;flex-shrink:0;user-select:none;gap:8px;}
+.dots{display:flex;gap:6px;margin-right:4px;}
 .dot{width:12px;height:12px;border-radius:50%;}
 .dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
 .title-text{font-size:12px;color:var(--muted);flex:1;text-align:center;letter-spacing:.05em;}
 .title-text span{color:var(--accent);}
+.title-boss{font-size:11px;color:var(--red);animation:flicker 3s infinite;}
+@keyframes flicker{0%,95%,100%{opacity:1;}96%,98%{opacity:.4;}}
+.title-ver{font-size:11px;color:var(--muted);}
 .title-user{font-size:11px;color:var(--muted);}
 
-/* LAYOUT */
 .shell{display:flex;flex-direction:column;height:calc(100vh - 38px);}
-.output-area{
-  flex:1;overflow-y:auto;padding:1rem 1.25rem 0.5rem;
-  display:flex;flex-direction:column;gap:0;
-}
-.prompt-bar{
-  flex-shrink:0;border-top:1px solid var(--border2);background:var(--titlebar);
-  padding:8px 1.25rem;display:flex;align-items:center;gap:0;
-}
+.output-area{flex:1;overflow-y:auto;padding:1rem 1.25rem .5rem;display:flex;flex-direction:column;}
+.prompt-bar{flex-shrink:0;border-top:1px solid var(--border2);background:var(--titlebar);padding:8px 1.25rem;display:flex;align-items:center;}
 
-/* OUTPUT LINES */
 .line{display:block;white-space:pre-wrap;word-break:break-word;padding:1px 0;}
 .line-dim{color:var(--muted);}
 .line-err{color:var(--red);}
 .line-ok{color:var(--accent);}
 .line-amber{color:var(--amber);}
 .line-cyan{color:var(--cyan);}
-.line-cmd{color:var(--text);}
 .line-blank{height:6px;display:block;}
 
-/* PROMPT */
 .ps1{white-space:nowrap;flex-shrink:0;margin-right:6px;}
 .ps1-u{color:var(--accent);font-weight:700;}
 .ps1-h{color:var(--cyan);}
 .ps1-p{color:var(--amber);}
 .ps1-s{color:var(--accent);}
-#cmdInput{
-  flex:1;background:transparent;border:none;outline:none;
-  color:var(--accent);font-family:var(--font);font-size:13px;
-  caret-color:var(--accent);padding:0;
-  /* kill autocomplete styling */
-  -webkit-text-fill-color:var(--accent);
-}
-#cmdInput::-webkit-contacts-auto-fill-button,
-#cmdInput::-webkit-credentials-auto-fill-button{display:none!important;}
+#cmdInput{flex:1;background:transparent;border:none;outline:none;color:var(--accent);font-family:var(--font);font-size:13px;caret-color:var(--accent);padding:0;-webkit-text-fill-color:var(--accent);}
+#cmdInput::-webkit-contacts-auto-fill-button,#cmdInput::-webkit-credentials-auto-fill-button{display:none!important;}
 
-/* TABLES */
 .t-table{width:100%;border-collapse:collapse;margin:4px 0;}
 .t-table th{color:var(--muted);text-align:left;font-size:11px;padding:2px 10px 6px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.08em;font-weight:500;}
 .t-table td{padding:5px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .t-table tr:last-child td{border-bottom:none;}
 .t-table tr:hover td{background:var(--accent-faint);}
-.t-table tr.me td{background:rgba(57,255,106,0.04);}
+.t-table tr.me td{background:var(--accent-faint);}
 .rb{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border:1px solid var(--border2);color:var(--muted);min-width:32px;text-align:center;}
-.rb.r1{color:var(--amber);border-color:rgba(232,184,75,0.4);}
-.rb.r2{color:#c0c0c0;border-color:rgba(192,192,192,0.3);}
-.rb.r3{color:#cd7f32;border-color:rgba(205,127,50,0.3);}
+.rb.r1{color:var(--amber);border-color:rgba(232,184,75,.4);}
+.rb.r2{color:#c0c0c0;border-color:rgba(192,192,192,.3);}
+.rb.r3{color:#cd7f32;border-color:rgba(205,127,50,.3);}
 .prog-f{color:var(--accent);}
 .prog-e{color:var(--muted);}
+.prog-hp{color:var(--red);}
+.prog-hp-e{color:var(--muted);}
 
-/* TASK CHECKLIST */
 .checklist{margin:4px 0;}
-.check-row{
-  display:flex;align-items:center;gap:10px;padding:5px 0;
-  border-bottom:1px solid var(--border);cursor:pointer;
-}
+.check-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer;}
 .check-row:last-child{border-bottom:none;}
 .check-row:hover .cb{border-color:var(--accent);}
-.cb{
-  width:16px;height:16px;border:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:10px;color:var(--accent);transition:all .1s;
-}
+.cb{width:16px;height:16px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:var(--accent);transition:all .1s;}
 .cb.checked{background:var(--accent-faint);border-color:var(--accent-dim);}
 .check-name{flex:1;font-size:13px;}
 .check-name.done{color:var(--muted);text-decoration:line-through;}
@@ -120,11 +93,31 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .d-hard{color:#ff8c42;border-color:rgba(255,140,66,.4);}
 .d-expert{color:#ff6ecb;border-color:rgba(255,110,203,.4);}
 
+/* BOSS HP BAR */
+.boss-card{border:1px solid rgba(255,79,79,.35);padding:12px 14px;margin:6px 0;background:rgba(255,30,30,.04);}
+.boss-name{font-size:16px;font-weight:700;color:var(--red);margin-bottom:2px;}
+.boss-desc{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.boss-hp-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.boss-hp-bar{flex:1;height:12px;background:var(--border2);position:relative;overflow:hidden;}
+.boss-hp-fill{height:100%;background:var(--red);transition:width .5s;position:relative;}
+.boss-hp-fill::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(0,0,0,.2) 8px,rgba(0,0,0,.2) 9px);}
+.boss-hp-text{font-size:12px;font-weight:700;color:var(--red);white-space:nowrap;}
+.boss-weakness{font-size:11px;color:var(--amber);}
+.boss-meta{display:flex;gap:16px;font-size:11px;color:var(--muted);margin-top:6px;}
+.boss-slain{border-color:var(--amber);background:rgba(232,184,75,.04);}
+.boss-slain .boss-name{color:var(--amber);}
+
+/* CRASH OVERLAY */
+.crash-overlay{position:fixed;inset:0;background:#000;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:crashin .1s;}
+@keyframes crashin{from{opacity:0;}to{opacity:1;}}
+.crash-text{color:var(--red);font-size:14px;text-align:center;max-width:500px;}
+.crash-title{font-size:22px;font-weight:700;color:var(--red);margin-bottom:1rem;animation:blink-red 1s step-end infinite;}
+@keyframes blink-red{50%{opacity:0;}}
+
 /* PODIUM */
 .podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin:6px 0 10px;}
 .pc{background:var(--bg2);padding:10px 12px;text-align:center;}
 .pc.p1{background:rgba(232,184,75,.05);}
-.pc-sym{font-size:12px;margin-bottom:3px;}
 .pc-name{font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pc-pts{font-size:16px;font-weight:700;}
 .p1 .pc-pts{color:var(--amber);}
@@ -132,21 +125,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .p3 .pc-pts{color:#cd7f32;}
 .pc-tasks{font-size:11px;color:var(--muted);}
 
-/* SPINNER */
-.spin{display:inline-block;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent-dim);}
-
-@media(max-width:600px){
-  .podium{grid-template-columns:1fr;}
-  .output-area{padding:.75rem .75rem .5rem;}
-  .prompt-bar{padding:8px .75rem;}
-}
+@media(max-width:600px){.podium{grid-template-columns:1fr;}.output-area{padding:.75rem .75rem .5rem;}.prompt-bar{padding:8px .75rem;}}
 </style>
 </head>
 <body>
@@ -154,19 +137,23 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 <div class="titlebar">
   <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
   <div class="title-text">workpts@<span>terminal</span> — bash</div>
-  <div style="font-size:11px;color:var(--muted);margin-left:auto;padding-left:1rem;">v1.5</div><div class="title-user" id="titleUser" style="margin-left:8px;"></div>
+  <div class="title-boss" id="titleBoss"></div>
+  <div class="title-ver">v2.0</div>
+  <div class="title-user" id="titleUser"></div>
 </div>
 
 <div class="shell">
   <div class="output-area" id="out"></div>
   <div class="prompt-bar">
-    <span class="ps1" id="ps1">
+    <span class="ps1">
       <span class="ps1-u" id="ps1u">guest</span><span class="ps1-h">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-p" id="ps1p">~</span><span class="ps1-s">$ </span>
     </span>
-    <input id="cmdInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="" data-lpignore="true" data-form-type="other" />
+    <input id="cmdInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" />
   </div>
 </div>
 
+<!-- bosses.js must be in the same directory / served from same repo -->
+<script src="bosses.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
@@ -179,21 +166,42 @@ firebase.initializeApp({
   appId:"1:366980877812:web:34d0df0519b94e50d43da1"
 });
 const db = firebase.firestore();
-const usersCol = db.collection('users');
+const usersCol  = db.collection('users');
+const bossCol   = db.collection('boss');   // single doc: 'current'
 
-// ── State ─────────────────────────────────────────────────────────────────
-let session = { user: null, mode: 'cmd' }; // mode: cmd | password
+// ── State ─────────────────────────────────────────────────────────────────────
+let session  = { user:null, mode:'cmd' };
 let passwordCallback = null;
-let cmdHistory = [], histIdx = -1, draftCmd = '';
-let allData = {};
-let liveUnsub = null;
-let lastView = null; // track which view is currently showing
+let _pwReal  = '';
+let cmdHistory=[], histIdx=-1, draftCmd='';
+let allData  = {};
+let bossState= null;   // live boss document
+let liveUnsub=null, bossUnsub=null;
 
 const DIFF_LABELS={'1':'easy','1.5':'medium','2.5':'hard','4':'expert'};
-const DIFF_CLS={'1':'d-easy','1.5':'d-medium','2.5':'d-hard','4':'d-expert'};
-const DIFF_VALS={'easy':1,'medium':1.5,'hard':2.5,'expert':4,'e':1,'m':1.5,'h':2.5,'x':4};
+const DIFF_CLS   ={'1':'d-easy','1.5':'d-medium','2.5':'d-hard','4':'d-expert'};
+const DIFF_VALS  ={'easy':1,'medium':1.5,'hard':2.5,'expert':4,'e':1,'m':1.5,'h':2.5,'x':4};
 
-// ── Scoring ───────────────────────────────────────────────────────────────
+// ── Boss helpers ───────────────────────────────────────────────────────────────
+function getWeekNumber(){
+  const now=new Date();
+  const start=new Date(now.getFullYear(),0,1);
+  return Math.ceil(((now-start)/86400000+start.getDay()+1)/7);
+}
+function getMondayTs(){
+  const d=new Date();
+  const day=d.getDay();
+  const diff=d.getDate()-(day===0?6:day-1);
+  const mon=new Date(d.setDate(diff));
+  mon.setHours(0,0,0,0);
+  return mon.getTime();
+}
+function getBossForWeek(){
+  const week=getWeekNumber();
+  return BOSSES[(week-1)%BOSSES.length];
+}
+
+// ── Scoring ────────────────────────────────────────────────────────────────────
 function calcPoints(tasks){
   let total=0,hist=[];
   for(const t of (tasks||[])){
@@ -201,24 +209,15 @@ function calcPoints(tasks){
     const base=t.units*parseFloat(t.diff)*10;
     const avg=hist.length?hist.reduce((a,b)=>a+b,0)/hist.length:null;
     const bonus=(avg!==null&&base>avg)?Math.round((base-avg)*.3):0;
-    hist.push(base);total+=Math.round(base+bonus);
+    hist.push(base); total+=Math.round(base+bonus);
   }
   return total;
 }
-function taskPts(t,doneOnly,all){
+function taskPts(t,all){
   const doneTasks=(all||[]).filter(x=>x.done);
-  const idx=doneTasks.indexOf(t);
-  if(idx<0){
-    // preview pts if checked
-    const base=t.units*parseFloat(t.diff)*10;
-    const hist=doneTasks.map(x=>x.units*parseFloat(x.diff)*10);
-    const avg=hist.length?hist.reduce((a,b)=>a+b,0)/hist.length:null;
-    const bonus=(avg!==null&&base>avg)?Math.round((base-avg)*.3):0;
-    return Math.round(base+bonus);
-  }
-  const prior=doneTasks.slice(0,idx);
   const base=t.units*parseFloat(t.diff)*10;
-  const avg=prior.length?prior.map(x=>x.units*parseFloat(x.diff)*10).reduce((a,b)=>a+b,0)/prior.length:null;
+  const hist=doneTasks.map(x=>x.units*parseFloat(x.diff)*10);
+  const avg=hist.length?hist.reduce((a,b)=>a+b,0)/hist.length:null;
   const bonus=(avg!==null&&base>avg)?Math.round((base-avg)*.3):0;
   return Math.round(base+bonus);
 }
@@ -227,28 +226,157 @@ function progBar(pct,len=16){
   const f=Math.round((pct/100)*len);
   return `<span class="prog-f">${'█'.repeat(f)}</span><span class="prog-e">${'░'.repeat(len-f)}</span> ${pct}%`;
 }
+function hpBar(pct,len=24){
+  const f=Math.round((pct/100)*len);
+  return `<span class="prog-hp">${'█'.repeat(f)}</span><span class="prog-hp-e">${'░'.repeat(len-f)}</span>`;
+}
 
-// ── Hashing ───────────────────────────────────────────────────────────────
+// ── Hash ──────────────────────────────────────────────────────────────────────
 async function sha256(str){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// ── Live listener ─────────────────────────────────────────────────────────
+// ── Boss weekly reset check ────────────────────────────────────────────────────
+async function checkWeeklyReset(){
+  if(!bossState) return;
+  const monTs=getMondayTs();
+  if(bossState.weekStart >= monTs) return; // still same week
+  // New week — resolve last week's boss
+  const wasSlain = bossState.hp <= 0;
+  if(wasSlain){
+    await distributeRewards();
+  } else {
+    await triggerCrash();
+  }
+  await spawnNewBoss();
+}
+
+async function spawnNewBoss(){
+  const boss=getBossForWeek();
+  const state={
+    bossId:    boss.id,
+    hp:        boss.health,
+    maxHp:     boss.health,
+    weekStart: getMondayTs(),
+    slainAt:   null,
+    damage:    {},   // { username: totalDamage }
+    rewarded:  false
+  };
+  await bossCol.doc('current').set(state);
+  bossState=state;
+  updateTitleBoss();
+}
+
+async function distributeRewards(){
+  if(!bossState||bossState.rewarded) return;
+  const boss=getBossForWeek();
+  const damage=bossState.damage||{};
+  const totalDmg=Object.values(damage).reduce((a,b)=>a+b,0)||1;
+  const pool=boss.reward||2000;
+  // distribute proportionally
+  for(const [user,dmg] of Object.entries(damage)){
+    if(!allData[user])continue;
+    const share=Math.round((dmg/totalDmg)*pool);
+    if(share<=0)continue;
+    const tasks=allData[user].tasks||[];
+    tasks.push({name:`★ Boss kill bonus (${bossState.bossId})`,units:1,diff:'1',done:true,ts:Date.now(),bossReward:share,_pts:share});
+    await usersCol.doc(user).set({tasks},{merge:true});
+  }
+  await bossCol.doc('current').update({rewarded:true});
+}
+
+async function triggerCrash(){
+  // wipe everyone's points by clearing all done tasks
+  const batch=db.batch();
+  for(const [user,data] of Object.entries(allData)){
+    if(!data.passwordHash)continue;
+    const tasks=(data.tasks||[]).map(t=>({...t,done:false}));
+    batch.set(usersCol.doc(user),{...data,tasks},{merge:false});
+  }
+  await batch.commit();
+  showCrashOverlay();
+}
+
+function showCrashOverlay(){
+  const el=document.createElement('div');
+  el.className='crash-overlay';
+  el.innerHTML=`
+    <div class="crash-title">⚠ SYSTEM FAILURE ⚠</div>
+    <div class="crash-text">
+      <div style="margin-bottom:1rem">The weekly boss was not defeated.</div>
+      <div style="color:#666;font-size:12px;margin-bottom:.5rem">kernel panic: productivity.exe has stopped responding</div>
+      <div style="color:#666;font-size:12px;margin-bottom:.5rem">all user data has been corrupted</div>
+      <div style="color:#666;font-size:12px;margin-bottom:2rem">points reset to 0x00000000</div>
+      <div style="font-size:11px;color:#444">press any key to reboot...</div>
+    </div>`;
+  document.body.appendChild(el);
+  const dismiss=()=>{el.remove();document.removeEventListener('keydown',dismiss);};
+  setTimeout(()=>document.addEventListener('keydown',dismiss),800);
+}
+
+function updateTitleBoss(){
+  const el=document.getElementById('titleBoss');
+  if(!bossState){el.textContent='';return;}
+  if(bossState.hp<=0){el.textContent='';return;}
+  const boss=BOSSES.find(b=>b.id===bossState.bossId)||getBossForWeek();
+  const pct=Math.round((bossState.hp/bossState.maxHp)*100);
+  el.textContent=`☠ ${boss.name} [${pct}% HP]`;
+}
+
+// ── Live listeners ─────────────────────────────────────────────────────────────
 function startLive(){
   if(liveUnsub)liveUnsub();
   liveUnsub=usersCol.onSnapshot(snap=>{
     snap.forEach(doc=>{allData[doc.id]=doc.data();});
-    const lbEl=document.getElementById('live-lb');
-    if(lbEl)lbEl.innerHTML=buildLbTable();
-    const podEl=document.getElementById('live-podium');
-    if(podEl)podEl.innerHTML=buildPodiumCells();
-    const clEl=document.getElementById('live-tasks');
-    if(clEl)clEl.innerHTML=buildChecklistHTML();
+    document.getElementById('live-lb')  && (document.getElementById('live-lb').innerHTML  =buildLbTable());
+    document.getElementById('live-pod') && (document.getElementById('live-pod').innerHTML  =buildPodiumCells());
+    document.getElementById('live-tasks')&& (document.getElementById('live-tasks').innerHTML=buildChecklistHTML());
+    document.getElementById('live-boss')&& (document.getElementById('live-boss').innerHTML  =buildBossCard());
+  });
+  if(bossUnsub)bossUnsub();
+  bossUnsub=bossCol.doc('current').onSnapshot(snap=>{
+    if(snap.exists){
+      bossState=snap.data();
+      updateTitleBoss();
+      document.getElementById('live-boss')&&(document.getElementById('live-boss').innerHTML=buildBossCard());
+      document.getElementById('live-lb')  &&(document.getElementById('live-lb').innerHTML  =buildLbTable());
+    }
   });
 }
 
-// ── Output helpers ────────────────────────────────────────────────────────
+// ── Save helpers ──────────────────────────────────────────────────────────────
+async function saveUser(){
+  if(!session.user)return;
+  await usersCol.doc(session.user).set({tasks:allData[session.user].tasks},{merge:true});
+}
+async function dealDamage(pts){
+  if(!bossState||bossState.hp<=0)return;
+  const boss=BOSSES.find(b=>b.id===bossState.bossId)||getBossForWeek();
+  // weakness multiplier
+  const weaknessMap={'easy':'1','medium':'1.5','hard':'2.5','expert':'4'};
+  // already pts — no extra multiplier needed, pts already reflect difficulty
+  const newHp=Math.max(0,bossState.hp-pts);
+  const dmgMap={...bossState.damage};
+  dmgMap[session.user]=(dmgMap[session.user]||0)+pts;
+  const update={hp:newHp,damage:dmgMap};
+  if(newHp===0) update.slainAt=Date.now();
+  await bossCol.doc('current').update(update);
+  bossState={...bossState,...update};
+  if(newHp===0){
+    blank();
+    print('','');
+    print('██████████████████████████████████████████','line-err');
+    print(`  ☠  BOSS SLAIN: ${boss.name.toUpperCase()}  ☠`,'line-amber');
+    print('██████████████████████████████████████████','line-err');
+    print(`  distributing ${boss.reward.toLocaleString()} bonus points...`,'line-dim');
+    blank();
+    await distributeRewards();
+    await bossCol.doc('current').update({rewarded:true});
+  }
+}
+
+// ── Output helpers ─────────────────────────────────────────────────────────────
 const out=document.getElementById('out');
 function print(text='',cls=''){
   const el=document.createElement('span');
@@ -260,235 +388,75 @@ function print(text='',cls=''){
 }
 function blank(){const el=document.createElement('span');el.className='line-blank';out.appendChild(el);}
 function printCmd(cmd){
-  // echo the command (show *** for password mode)
-  const display=session.mode==='password'?'*'.repeat(cmd.length):cmd;
-  const ps=document.getElementById('ps1').innerHTML;
-  print(`${document.getElementById('ps1u').textContent}@workpts:${document.getElementById('ps1p').textContent}$ ${display}`,'line-dim');
+  const disp=session.mode==='password'?'•'.repeat(cmd.length):cmd;
+  print(`${document.getElementById('ps1u').textContent}@workpts:${document.getElementById('ps1p').textContent}$ ${disp}`,'line-dim');
 }
 function appendEl(el){out.appendChild(el);out.scrollTop=out.scrollHeight;}
 function clearOut(){out.innerHTML='';}
-
 function setPrompt(user,path){
   document.getElementById('ps1u').textContent=user||'guest';
   document.getElementById('ps1p').textContent=path||'~';
   document.getElementById('titleUser').textContent=user?`[${user}]`:'';
 }
 
-// ── Password mode ─────────────────────────────────────────────────────────
-let _pwReal=''; // actual password chars when in password mode
+// ── Password mode ─────────────────────────────────────────────────────────────
 function askPassword(prompt,cb){
-  session.mode='password';
-  passwordCallback=cb;
-  _pwReal='';
+  session.mode='password'; passwordCallback=cb; _pwReal='';
   print(prompt,'line-dim');
-  const inp=document.getElementById('cmdInput');
-  inp.value='';
-  inp.setAttribute('data-masking','true');
+  document.getElementById('cmdInput').value='';
 }
 function exitPasswordMode(){
-  session.mode='cmd';
-  passwordCallback=null;
-  _pwReal='';
-  const inp=document.getElementById('cmdInput');
-  inp.value='';
-  inp.removeAttribute('data-masking');
+  session.mode='cmd'; passwordCallback=null; _pwReal='';
+  document.getElementById('cmdInput').value='';
 }
 
-// ── Commands ──────────────────────────────────────────────────────────────
-const COMMANDS={
+// ── Build helpers ──────────────────────────────────────────────────────────────
+function buildBossCard(){
+  if(!bossState) return '<span class="line-dim"># no boss data</span>';
+  const boss=BOSSES.find(b=>b.id===bossState.bossId)||getBossForWeek();
+  const pct=Math.max(0,Math.round((bossState.hp/bossState.maxHp)*100));
+  const slain=bossState.hp<=0;
+  const damage=bossState.damage||{};
+  const totalDmg=Object.values(damage).reduce((a,b)=>a+b,0)||1;
+  const topDmg=Object.entries(damage).sort((a,b)=>b[1]-a[1]).slice(0,3);
 
-  help(){
-    blank();
-    print('available commands:','line-dim');
-    blank();
-    const cmds=[
-      ['register &lt;name&gt;','create a new account'],
-      ['login &lt;name&gt;',    'login to your account'],
-      ['logout',            'end your session'],
-      ['leaderboard',       'show live rankings (alias: lb)'],
-      ['tasks',             'view and manage your task list'],
-      ['add &lt;name&gt; [units] [difficulty]','add a task  (diff: easy/medium/hard/expert)'],
-      ['check &lt;#&gt;',       'check off a task by number'],
-      ['uncheck &lt;#&gt;',     'uncheck a task'],
-      ['rm &lt;#&gt;',          'remove a task'],
-      ['theme &lt;name&gt;',     'set color theme: green, red, blue, black'],
-      ['clear',             'clear the terminal'],
-      ['help',              'show this message'],
-    ];
-    cmds.forEach(([cmd,desc])=>{
-      print(`  <span style="color:var(--accent)">${cmd.padEnd(38)}</span><span class="line-dim">${desc}</span>`);
+  // days remaining
+  const monTs=getMondayTs();
+  const nextMon=monTs+7*24*60*60*1000;
+  const msLeft=nextMon-Date.now();
+  const daysLeft=Math.max(0,Math.ceil(msLeft/86400000));
+
+  let html=`<div class="boss-card${slain?' boss-slain':''}">`;
+  html+=`<div class="boss-name">${slain?'☠':' ☠'} ${boss.name} ${slain?'— SLAIN':''}</div>`;
+  html+=`<div class="boss-desc">${boss.description}</div>`;
+  if(!slain){
+    html+=`<div class="boss-hp-row">
+      <div class="boss-hp-bar"><div class="boss-hp-fill" style="width:${pct}%"></div></div>
+      <div class="boss-hp-text">${bossState.hp.toLocaleString()} / ${bossState.maxHp.toLocaleString()} HP</div>
+    </div>`;
+    html+=`<div class="boss-meta">`;
+    html+=`<span>weakness: <span style="color:var(--amber)">${boss.weakness}</span></span>`;
+    html+=`<span>reward pool: <span style="color:var(--accent)">${boss.reward.toLocaleString()} pts</span></span>`;
+    html+=`<span>resets in: <span style="color:var(--red)">${daysLeft}d</span></span>`;
+    html+=`</div>`;
+  } else {
+    html+=`<div class="boss-meta"><span style="color:var(--amber)">reward pool distributed ✓</span></div>`;
+  }
+  if(topDmg.length){
+    html+=`<div style="margin-top:8px;font-size:11px;color:var(--muted)">top damage dealers:</div>`;
+    topDmg.forEach(([u,d],i)=>{
+      const contrib=Math.round((d/totalDmg)*100);
+      const isMe=u===session.user;
+      html+=`<div style="font-size:12px;margin-top:2px"><span style="color:${isMe?'var(--accent)':'var(--text)'}">${['①','②','③'][i]} ${u}</span> <span style="color:var(--muted)">— ${d.toLocaleString()} dmg (${contrib}%)</span></div>`;
     });
-    blank();
-  },
-
-  async register(args){
-    const name=(args[0]||'').trim();
-    if(!name){print('usage: register &lt;username&gt;','line-err');return;}
-    if(allData[name]){print(`error: user "${name}" already exists — use: login ${name}`,'line-err');return;}
-    blank();
-    print(`registering new user: <span style="color:var(--accent)">${name}</span>`,'line-dim');
-    askPassword('enter a password: ',async(pw1)=>{
-      if(!pw1){print('error: password cannot be empty','line-err');exitPasswordMode();return;}
-      askPassword('confirm password:  ',async(pw2)=>{
-        if(pw1!==pw2){print('error: passwords do not match','line-err');exitPasswordMode();return;}
-        const hash=await sha256(pw1);
-        allData[name]={tasks:[],passwordHash:hash};
-        await usersCol.doc(name).set({tasks:[],passwordHash:hash});
-        session.user=name;
-        setPrompt(name,'~/tasks');
-        exitPasswordMode();
-        blank();
-        print(`[OK] registered and logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
-        print('type "tasks" to manage your task list, "help" for all commands','line-dim');
-        blank();
-      });
-    });
-  },
-
-  async login(args){
-    const name=(args[0]||'').trim();
-    if(!name){print('usage: login &lt;username&gt;','line-err');return;}
-    if(!allData[name]){print(`error: user "${name}" not found — use: register ${name}`,'line-err');return;}
-    blank();
-    askPassword(`password for ${name}: `,async(pw)=>{
-      const hash=await sha256(pw);
-      if(hash!==allData[name].passwordHash){
-        print('error: incorrect password','line-err');
-        exitPasswordMode();blank();return;
-      }
-      session.user=name;
-      setPrompt(name,'~/tasks');
-      exitPasswordMode();
-      blank();
-      print(`[OK] logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
-      print('type "tasks" to manage your task list, "help" for all commands','line-dim');
-      blank();
-    });
-  },
-
-  logout(){
-    if(!session.user){print('not logged in','line-err');return;}
-    const u=session.user;
-    session.user=null;
-    setPrompt('guest','~');
-    blank();
-    print(`[OK] logged out ${u}`,'line-ok');
-    blank();
-  },
-
-  leaderboard(){
-    blank();
-    print('<span class="line-dim"># ── live leaderboard ─────────────────────────────</span>');
-    // podium wrapper with stable id so live listener can update it
-    const podWrap=document.createElement('div');podWrap.id='live-podium';
-    podWrap.innerHTML=buildPodiumCells();
-    appendEl(podWrap);
-    // table wrapper with stable id
-    const wrap=document.createElement('div');wrap.id='live-lb';
-    wrap.innerHTML=buildLbTable();
-    appendEl(wrap);
-    blank();
-  },
-
-  tasks(){
-    if(!session.user){print('not logged in — use: login &lt;name&gt;','line-err');return;}
-    const tasks=allData[session.user]?.tasks||[];
-    blank();
-    print(`<span class="line-dim"># ── task list for <span style="color:var(--accent)">${session.user}</span> ─────────────────</span>`);
-    print('<span class="line-dim"># use "check &lt;#&gt;" to complete a task, click a row, or "add &lt;name&gt;" to add one</span>');
-    blank();
-    const clWrap=document.createElement('div');clWrap.id='live-tasks';
-    clWrap.innerHTML=buildChecklistHTML();
-    appendEl(clWrap);
-    blank();
-  },
-
-  async add(args){
-    if(!session.user){print('not logged in','line-err');return;}
-    if(!args.length){print('usage: add &lt;task name&gt; [units] [difficulty]','line-err');return;}
-    // parse trailing number and difficulty
-    let name=args.join(' ');
-    let units=1,diff='1';
-    // check last arg for difficulty
-    const lastArg=args[args.length-1].toLowerCase();
-    if(DIFF_VALS[lastArg]!==undefined){diff=String(DIFF_VALS[lastArg]);args.pop();name=args.join(' ');}
-    // check new last arg for units
-    const maybeUnits=parseInt(args[args.length-1]);
-    if(!isNaN(maybeUnits)&&maybeUnits>0){units=maybeUnits;args.pop();name=args.join(' ');}
-    name=name.trim();
-    if(!name){print('error: task name is required','line-err');return;}
-    allData[session.user].tasks.push({name,units,diff,done:false,ts:Date.now()});
-    await usersCol.doc(session.user).set({tasks:allData[session.user].tasks},{merge:true});
-    blank();
-    print(`[OK] added: <span style="color:var(--accent)">${name}</span> <span class="line-dim">(${DIFF_LABELS[diff]||'easy'}, ${units} unit${units!==1?'s':''})</span>`,'line-ok');
-    blank();
-    COMMANDS.tasks();
-  },
-
-  async check(args){
-    if(!session.user){print('not logged in','line-err');return;}
-    const idx=parseInt(args[0])-1;
-    const tasks=allData[session.user]?.tasks||[];
-    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found — use "tasks" to see your list`,'line-err');return;}
-    if(tasks[idx].done){print(`task #${args[0]} is already done — use "uncheck ${args[0]}" to undo`,'line-dim');return;}
-    tasks[idx].done=true;
-    await usersCol.doc(session.user).set({tasks},{merge:true});
-    const pts=taskPts(tasks[idx],true,tasks);
-    blank();
-    print(`[✓] <span style="color:var(--accent)">${tasks[idx].name}</span> — earned <span style="color:var(--amber);font-weight:700">+${pts} pts</span>`,'line-ok');
-    blank();
-    COMMANDS.tasks();
-  },
-
-  async uncheck(args){
-    if(!session.user){print('not logged in','line-err');return;}
-    const idx=parseInt(args[0])-1;
-    const tasks=allData[session.user]?.tasks||[];
-    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
-    if(!tasks[idx].done){print(`task #${args[0]} is not checked`,'line-dim');return;}
-    tasks[idx].done=false;
-    await usersCol.doc(session.user).set({tasks},{merge:true});
-    blank();
-    print(`[OK] unchecked: <span style="color:var(--amber)">${tasks[idx].name}</span>`,'line-ok');
-    blank();
-    COMMANDS.tasks();
-  },
-
-  async rm(args){
-    if(!session.user){print('not logged in','line-err');return;}
-    const idx=parseInt(args[0])-1;
-    const tasks=allData[session.user]?.tasks||[];
-    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
-    const name=tasks[idx].name;
-    tasks.splice(idx,1);
-    await usersCol.doc(session.user).set({tasks},{merge:true});
-    blank();
-    print(`[OK] removed: ${name}`,'line-ok');
-    blank();
-    COMMANDS.tasks();
-  },
-
-  theme(args){
-    const name=(args[0]||'').toLowerCase();
-    const valid=['green','red','blue','black'];
-    if(!name||!valid.includes(name)){
-      print('usage: theme &lt;name&gt;','line-err');
-      print('available themes: '+valid.map(t=>`<span style="color:var(--accent)">${t}</span>`).join('  '));
-      blank();return;
-    }
-    document.documentElement.setAttribute('data-theme',name);
-    localStorage.setItem('wp_theme',name);
-    blank();
-    print(`[OK] theme set to <span style="color:var(--accent)">${name}</span>`,'line-ok');
-    blank();
-  },
-
-  clear(){clearOut();}
-};
+  }
+  if(boss.lore) html+=`<div style="margin-top:8px;font-size:11px;color:var(--muted);font-style:italic">"${boss.lore}"</div>`;
+  html+=`</div>`;
+  return html;
+}
 
 function buildPodiumCells(){
-  const entries=Object.entries(allData)
-    .filter(([,d])=>d.passwordHash)
+  const entries=Object.entries(allData).filter(([,d])=>d.passwordHash)
     .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
     .sort((a,b)=>b.points-a.points);
   if(!entries.length) return '<span class="line-dim"># no participants yet</span>';
@@ -500,7 +468,7 @@ function buildPodiumCells(){
     if(!e){html+='<div class="pc"></div>';return;}
     const isMe=e.name===session.user;
     html+=`<div class="pc ${pCls[ci]}">
-      <div class="pc-sym" style="color:${pColors[ci]}">${syms[ci]}</div>
+      <div style="font-size:12px;color:${pColors[ci]};margin-bottom:3px">${syms[ci]}</div>
       <div class="pc-name">${e.name}${isMe?' ◆':''}</div>
       <div class="pc-pts">${e.points.toLocaleString()}</div>
       <div class="pc-tasks">${e.done}/${e.tasks} done</div>
@@ -511,7 +479,7 @@ function buildPodiumCells(){
 }
 
 function buildChecklistHTML(){
-  if(!session.user) return '';
+  if(!session.user)return '';
   const tasks=allData[session.user]?.tasks||[];
   const total=calcPoints(tasks);
   const doneCount=tasks.filter(t=>t.done).length;
@@ -519,7 +487,7 @@ function buildChecklistHTML(){
   if(!tasks.length) return html+'<span class="line-dim">no tasks yet — add one with: add &lt;task name&gt; [units] [difficulty]</span>';
   html+='<div class="checklist">';
   tasks.forEach((t,i)=>{
-    const pts=taskPts(t,t.done,tasks);
+    const pts=taskPts(t,tasks);
     const dc=DIFF_CLS[String(t.diff)]||'d-easy';
     const dl=DIFF_LABELS[String(t.diff)]||'easy';
     const action=t.done?`uncheck ${i+1}`:`check ${i+1}`;
@@ -536,22 +504,21 @@ function buildChecklistHTML(){
   return html;
 }
 
-function buildLbTable(entries,maxPts){
-  entries=entries||Object.entries(allData)
-    .filter(([,d])=>d.passwordHash)
-    .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
+function buildLbTable(){
+  const entries=Object.entries(allData).filter(([,d])=>d.passwordHash)
+    .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length,dmg:(bossState?.damage||{})[n]||0}))
     .sort((a,b)=>b.points-a.points);
-  maxPts=maxPts||entries[0]?.points||1;
-  let t=`<table class="t-table"><thead><tr><th>rank</th><th>user</th><th>pts</th><th>done/total</th><th>progress</th></tr></thead><tbody>`;
+  const maxPts=entries[0]?.points||1;
+  let t=`<table class="t-table"><thead><tr><th>rank</th><th>user</th><th>pts</th><th>boss dmg</th><th>progress</th></tr></thead><tbody>`;
   entries.forEach((e,i)=>{
     const isMe=e.name===session.user;
-    const pct=Math.round((e.points/(maxPts||1))*100);
+    const pct=Math.round((e.points/maxPts)*100);
     const rc=i<3?` r${i+1}`:'';
     t+=`<tr class="${isMe?'me':''}">
       <td><span class="rb${rc}">${i<3?['#1','#2','#3'][i]:`#${i+1}`}</span></td>
       <td><span style="color:${isMe?'var(--accent)':'var(--text)'};font-weight:${isMe?700:400}">${e.name}${isMe?' ◆':''}</span></td>
       <td><span style="color:var(--accent);font-weight:700">${e.points.toLocaleString()}</span></td>
-      <td class="line-dim">${e.done}/${e.tasks}</td>
+      <td style="color:var(--red)">${e.dmg?e.dmg.toLocaleString():'-'}</td>
       <td>${progBar(pct)}</td>
     </tr>`;
   });
@@ -559,98 +526,268 @@ function buildLbTable(entries,maxPts){
   return t;
 }
 
-// ── Input handler ─────────────────────────────────────────────────────────
+// ── Commands ───────────────────────────────────────────────────────────────────
+const COMMANDS={
+  help(){
+    blank();
+    print('available commands:','line-dim');
+    blank();
+    const cmds=[
+      ['register &lt;name&gt;',               'create a new account'],
+      ['login &lt;name&gt;',                  'login to your account'],
+      ['logout',                             'end your session'],
+      ['leaderboard',                        'show live rankings (alias: lb)'],
+      ['tasks',                              'view and manage your task list'],
+      ['boss',                               'show the weekly boss status'],
+      ['add &lt;name&gt; [units] [diff]',     'add a task (diff: easy/medium/hard/expert)'],
+      ['check &lt;#&gt;',                     'check off a task — deals damage to boss'],
+      ['uncheck &lt;#&gt;',                   'uncheck a task'],
+      ['rm &lt;#&gt;',                        'remove a task'],
+      ['theme &lt;name&gt;',                  'set color theme: green red blue black'],
+      ['clear',                              'clear the terminal'],
+      ['help',                               'show this message'],
+    ];
+    cmds.forEach(([cmd,desc])=>{
+      print(`  <span style="color:var(--accent)">${cmd.padEnd(38)}</span><span class="line-dim">${desc}</span>`);
+    });
+    blank();
+  },
+
+  async register(args){
+    const name=(args[0]||'').trim();
+    if(!name){print('usage: register &lt;username&gt;','line-err');return;}
+    if(allData[name]){print(`error: "${name}" already exists — use: login ${name}`,'line-err');return;}
+    blank();
+    print(`registering: <span style="color:var(--accent)">${name}</span>`,'line-dim');
+    askPassword('enter a password: ',async(pw1)=>{
+      if(!pw1){print('error: password cannot be empty','line-err');exitPasswordMode();return;}
+      askPassword('confirm password:  ',async(pw2)=>{
+        if(pw1!==pw2){print('error: passwords do not match','line-err');exitPasswordMode();return;}
+        const hash=await sha256(pw1);
+        allData[name]={tasks:[],passwordHash:hash};
+        await usersCol.doc(name).set({tasks:[],passwordHash:hash});
+        session.user=name;
+        setPrompt(name,'~/tasks');
+        exitPasswordMode();
+        blank();
+        print(`[OK] registered and logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
+        print('type "tasks" to manage your task list, "boss" to see the weekly boss','line-dim');
+        blank();
+      });
+    });
+  },
+
+  async login(args){
+    const name=(args[0]||'').trim();
+    if(!name){print('usage: login &lt;username&gt;','line-err');return;}
+    if(!allData[name]){print(`error: "${name}" not found — use: register ${name}`,'line-err');return;}
+    blank();
+    askPassword(`password for ${name}: `,async(pw)=>{
+      const hash=await sha256(pw);
+      if(hash!==allData[name].passwordHash){
+        print('error: incorrect password','line-err');exitPasswordMode();blank();return;
+      }
+      session.user=name;
+      setPrompt(name,'~/tasks');
+      exitPasswordMode();
+      blank();
+      print(`[OK] logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
+      print('type "boss" to see the weekly boss, "tasks" to manage your list','line-dim');
+      blank();
+    });
+  },
+
+  logout(){
+    if(!session.user){print('not logged in','line-err');return;}
+    const u=session.user; session.user=null; setPrompt('guest','~');
+    blank(); print(`[OK] logged out ${u}`,'line-ok'); blank();
+  },
+
+  boss(){
+    blank();
+    print('<span class="line-dim"># ── weekly boss ─────────────────────────────────</span>');
+    const wrap=document.createElement('div'); wrap.id='live-boss';
+    wrap.innerHTML=buildBossCard();
+    appendEl(wrap);
+    blank();
+  },
+
+  leaderboard(){
+    blank();
+    print('<span class="line-dim"># ── live leaderboard ─────────────────────────────</span>');
+    const pod=document.createElement('div'); pod.id='live-pod';
+    pod.innerHTML=buildPodiumCells(); appendEl(pod);
+    const wrap=document.createElement('div'); wrap.id='live-lb';
+    wrap.innerHTML=buildLbTable(); appendEl(wrap);
+    blank();
+  },
+
+  tasks(){
+    if(!session.user){print('not logged in — use: login &lt;name&gt;','line-err');return;}
+    blank();
+    print(`<span class="line-dim"># ── task list: <span style="color:var(--accent)">${session.user}</span> ──────────────────────</span>`);
+    print('<span class="line-dim"># click a row or type "check &lt;#&gt;" to complete — each check deals boss damage</span>');
+    blank();
+    const wrap=document.createElement('div'); wrap.id='live-tasks';
+    wrap.innerHTML=buildChecklistHTML(); appendEl(wrap);
+    blank();
+  },
+
+  async add(args){
+    if(!session.user){print('not logged in','line-err');return;}
+    if(!args.length){print('usage: add &lt;task name&gt; [units] [difficulty]','line-err');return;}
+    let arr=[...args];
+    let units=1, diff='1';
+    const lastArg=arr[arr.length-1].toLowerCase();
+    if(DIFF_VALS[lastArg]!==undefined){diff=String(DIFF_VALS[lastArg]);arr.pop();}
+    const maybeUnits=parseInt(arr[arr.length-1]);
+    if(!isNaN(maybeUnits)&&maybeUnits>0){units=maybeUnits;arr.pop();}
+    const name=arr.join(' ').trim();
+    if(!name){print('error: task name is required','line-err');return;}
+    allData[session.user].tasks.push({name,units,diff,done:false,ts:Date.now()});
+    await saveUser();
+    blank();
+    print(`[OK] added: <span style="color:var(--accent)">${name}</span> <span class="line-dim">(${DIFF_LABELS[diff]||'easy'}, ${units} unit${units!==1?'s':''})</span>`,'line-ok');
+    blank();
+    COMMANDS.tasks();
+  },
+
+  async check(args){
+    if(!session.user){print('not logged in','line-err');return;}
+    const idx=parseInt(args[0])-1;
+    const tasks=allData[session.user]?.tasks||[];
+    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
+    if(tasks[idx].done){print(`task #${args[0]} already done — use "uncheck ${args[0]}" to undo`,'line-dim');return;}
+    tasks[idx].done=true;
+    await saveUser();
+    const pts=taskPts(tasks[idx],tasks);
+    // deal damage to boss
+    await dealDamage(pts);
+    blank();
+    const bossHp=bossState?.hp??null;
+    const bossHpStr=bossHp!==null?` <span class="line-dim">| boss HP: ${bossHp.toLocaleString()}</span>`:'';
+    print(`[✓] <span style="color:var(--accent)">${tasks[idx].name}</span> — <span style="color:var(--amber)">+${pts} pts</span> / <span style="color:var(--red)">-${pts} boss HP</span>${bossHpStr}`,'line-ok');
+    blank();
+    COMMANDS.tasks();
+  },
+
+  async uncheck(args){
+    if(!session.user){print('not logged in','line-err');return;}
+    const idx=parseInt(args[0])-1;
+    const tasks=allData[session.user]?.tasks||[];
+    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
+    if(!tasks[idx].done){print(`task #${args[0]} is not checked`,'line-dim');return;}
+    tasks[idx].done=false;
+    await saveUser();
+    blank(); print(`[OK] unchecked: <span style="color:var(--amber)">${tasks[idx].name}</span>`,'line-ok'); blank();
+    COMMANDS.tasks();
+  },
+
+  async rm(args){
+    if(!session.user){print('not logged in','line-err');return;}
+    const idx=parseInt(args[0])-1;
+    const tasks=allData[session.user]?.tasks||[];
+    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
+    const name=tasks[idx].name;
+    tasks.splice(idx,1);
+    await saveUser();
+    blank(); print(`[OK] removed: ${name}`,'line-ok'); blank();
+    COMMANDS.tasks();
+  },
+
+  theme(args){
+    const name=(args[0]||'').toLowerCase();
+    const valid=['green','red','blue','black'];
+    if(!name||!valid.includes(name)){
+      print('usage: theme &lt;name&gt;','line-err');
+      print('available: '+valid.map(t=>`<span style="color:var(--accent)">${t}</span>`).join('  '));
+      blank();return;
+    }
+    document.documentElement.setAttribute('data-theme',name);
+    localStorage.setItem('wp_theme',name);
+    blank(); print(`[OK] theme set to <span style="color:var(--accent)">${name}</span>`,'line-ok'); blank();
+  },
+
+  clear(){clearOut();}
+};
+
+// ── Input ─────────────────────────────────────────────────────────────────────
 async function runCmd(raw){
   const input=raw.trim();
   printCmd(input);
   if(!input)return;
-
   if(session.mode==='password'){
     if(passwordCallback){const cb=passwordCallback;passwordCallback=null;await cb(input);}
     return;
   }
-
   if(input){cmdHistory.unshift(input);if(cmdHistory.length>50)cmdHistory.pop();}
-  histIdx=-1;draftCmd='';
-
+  histIdx=-1; draftCmd='';
   const [cmd,...args]=input.split(/\s+/);
-  const aliases={'lb':'leaderboard','t':'tasks','h':'help'};
+  const aliases={'lb':'leaderboard','t':'tasks','h':'help','b':'boss'};
   const resolved=aliases[cmd.toLowerCase()]||cmd.toLowerCase();
   const fn=COMMANDS[resolved];
-  if(fn)await fn(args);
-  else{
-    print(`bash: ${resolved}: command not found — type "help" for available commands`,'line-err');
-    blank();
-  }
+  if(fn) await fn(args);
+  else{ print(`bash: ${resolved}: command not found — type "help" for commands`,'line-err'); blank(); }
 }
 
 const inp=document.getElementById('cmdInput');
 inp.addEventListener('keydown',async e=>{
-  // intercept all input when masking passwords
   if(inp.getAttribute('data-masking')){
     if(e.key==='Enter'){
       e.preventDefault();
-      const real=_pwReal;
-      inp.value='';_pwReal='';
-      await runCmd(real);
-      return;
+      const real=_pwReal; inp.value=''; _pwReal='';
+      await runCmd(real); return;
     }
     if(e.key==='Backspace'||e.key==='Delete'){
       e.preventDefault();
       _pwReal=_pwReal.slice(0,-1);
-      inp.value='•'.repeat(_pwReal.length);
-      return;
+      inp.value='•'.repeat(_pwReal.length); return;
     }
-    if(e.key==='c'&&e.ctrlKey){
-      e.preventDefault();exitPasswordMode();print('^C','line-dim');blank();return;
-    }
+    if(e.key==='c'&&e.ctrlKey){e.preventDefault();exitPasswordMode();print('^C','line-dim');blank();return;}
     if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){
-      e.preventDefault();
-      _pwReal+=e.key;
-      inp.value='•'.repeat(_pwReal.length);
+      e.preventDefault(); _pwReal+=e.key; inp.value='•'.repeat(_pwReal.length);
     }
     return;
   }
   if(e.key==='Enter'){
-    e.preventDefault();
-    const val=inp.value;
-    inp.value='';
-    await runCmd(val);
-  }
-  else if(e.key==='ArrowUp'&&session.mode==='cmd'){
+    e.preventDefault(); const val=inp.value; inp.value=''; await runCmd(val);
+  } else if(e.key==='ArrowUp'){
     e.preventDefault();
     if(histIdx===-1)draftCmd=inp.value;
     if(histIdx<cmdHistory.length-1){histIdx++;inp.value=cmdHistory[histIdx];}
     inp.setSelectionRange(inp.value.length,inp.value.length);
-  }
-  else if(e.key==='ArrowDown'&&session.mode==='cmd'){
+  } else if(e.key==='ArrowDown'){
     e.preventDefault();
     if(histIdx>0){histIdx--;inp.value=cmdHistory[histIdx];}
     else if(histIdx===0){histIdx=-1;inp.value=draftCmd;}
     inp.setSelectionRange(inp.value.length,inp.value.length);
-  }
-  else if(e.key==='l'&&e.ctrlKey){e.preventDefault();COMMANDS.clear();}
+  } else if(e.key==='l'&&e.ctrlKey){e.preventDefault();COMMANDS.clear();}
 });
 
-// keep input focused
 document.addEventListener('click',()=>inp.focus());
 inp.focus();
 
-// ── Boot ──────────────────────────────────────────────────────────────────
+// ── Boot ──────────────────────────────────────────────────────────────────────
 async function boot(){
-  // load all users first
-  try{
-    const snap=await usersCol.get();
-    snap.forEach(doc=>{allData[doc.id]=doc.data();});
-  }catch(e){
-    print('error: could not connect to firebase — check your Firestore rules','line-err');
-    print(e.message,'line-dim');
-    blank();
-  }
-  // restore saved theme
   const savedTheme=localStorage.getItem('wp_theme');
   if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);
+
+  try{
+    const [userSnap,bossSnap]=await Promise.all([usersCol.get(), bossCol.doc('current').get()]);
+    userSnap.forEach(doc=>{allData[doc.id]=doc.data();});
+    if(bossSnap.exists) bossState=bossSnap.data();
+  }catch(e){
+    print('error: could not connect to firebase','line-err');
+    print(e.message,'line-dim'); blank();
+  }
+
+  // spawn boss if none exists
+  if(!bossState) await spawnNewBoss();
+  // check if week rolled over
+  await checkWeeklyReset();
+
   startLive();
+  updateTitleBoss();
 
   print('<span style="color:var(--accent)"> __    __ ___  ____  __ __ ____  ____  _____</span>');
   print('<span style="color:var(--accent)"> \\ \\  / // _ \\|  _ \\|  |/ /|  _ \\|_  _|/ ___/</span>');
@@ -658,11 +795,13 @@ async function boot(){
   print('<span style="color:var(--accent)">   \\  / | |_| |  _ &lt;| |\\ \\ |  __/  | |  ___) |</span>');
   print('<span style="color:var(--accent)">    \\/   \\___/|_| \\_|_| \\_||_|    |___||____/ </span>');
   blank();
-  print('work points tracker — firebase edition','line-dim');
-  print(`<span class="line-dim">${Object.keys(allData).filter(k=>allData[k].passwordHash).length} registered user(s) | ${new Date().toLocaleString()}</span>`);
+  print('work points tracker v2.0','line-dim');
+
+  const boss=BOSSES.find(b=>b.id===bossState?.bossId)||getBossForWeek();
+  const pct=bossState?Math.round((bossState.hp/bossState.maxHp)*100):100;
+  print(`<span class="line-dim">${Object.keys(allData).filter(k=>allData[k].passwordHash).length} user(s) | boss: </span><span style="color:var(--red)">${boss.name} [${pct}% HP]</span>`);
   blank();
-  print('type <span style="color:var(--accent)">help</span> for available commands');
-  print('type <span style="color:var(--accent)">register &lt;name&gt;</span> to create an account or <span style="color:var(--accent)">login &lt;name&gt;</span> to sign in');
+  print('type <span style="color:var(--accent)">help</span> for commands · <span style="color:var(--accent)">boss</span> to see the weekly boss');
   blank();
 }
 
