@@ -154,7 +154,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 <div class="titlebar">
   <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
   <div class="title-text">workpts@<span>terminal</span> — bash</div>
-  <div class="title-user" id="titleUser"></div>
+  <div style="font-size:11px;color:var(--muted);margin-left:auto;padding-left:1rem;">v1.5</div><div class="title-user" id="titleUser" style="margin-left:8px;"></div>
 </div>
 
 <div class="shell">
@@ -163,7 +163,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
     <span class="ps1" id="ps1">
       <span class="ps1-u" id="ps1u">guest</span><span class="ps1-h">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-p" id="ps1p">~</span><span class="ps1-s">$ </span>
     </span>
-    <input id="cmdInput" type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="" />
+    <input id="cmdInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="" data-lpignore="true" data-form-type="other" />
   </div>
 </div>
 
@@ -275,18 +275,23 @@ function setPrompt(user,path){
 }
 
 // ── Password mode ─────────────────────────────────────────────────────────
+let _pwReal=''; // actual password chars when in password mode
 function askPassword(prompt,cb){
   session.mode='password';
   passwordCallback=cb;
+  _pwReal='';
   print(prompt,'line-dim');
-  document.getElementById('cmdInput').type='password';
-  document.getElementById('cmdInput').value='';
+  const inp=document.getElementById('cmdInput');
+  inp.value='';
+  inp.setAttribute('data-masking','true');
 }
 function exitPasswordMode(){
   session.mode='cmd';
   passwordCallback=null;
-  document.getElementById('cmdInput').type='text';
-  document.getElementById('cmdInput').value='';
+  _pwReal='';
+  const inp=document.getElementById('cmdInput');
+  inp.value='';
+  inp.removeAttribute('data-masking');
 }
 
 // ── Commands ──────────────────────────────────────────────────────────────
@@ -581,6 +586,31 @@ async function runCmd(raw){
 
 const inp=document.getElementById('cmdInput');
 inp.addEventListener('keydown',async e=>{
+  // intercept all input when masking passwords
+  if(inp.getAttribute('data-masking')){
+    if(e.key==='Enter'){
+      e.preventDefault();
+      const real=_pwReal;
+      inp.value='';_pwReal='';
+      await runCmd(real);
+      return;
+    }
+    if(e.key==='Backspace'||e.key==='Delete'){
+      e.preventDefault();
+      _pwReal=_pwReal.slice(0,-1);
+      inp.value='•'.repeat(_pwReal.length);
+      return;
+    }
+    if(e.key==='c'&&e.ctrlKey){
+      e.preventDefault();exitPasswordMode();print('^C','line-dim');blank();return;
+    }
+    if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){
+      e.preventDefault();
+      _pwReal+=e.key;
+      inp.value='•'.repeat(_pwReal.length);
+    }
+    return;
+  }
   if(e.key==='Enter'){
     e.preventDefault();
     const val=inp.value;
@@ -600,9 +630,6 @@ inp.addEventListener('keydown',async e=>{
     inp.setSelectionRange(inp.value.length,inp.value.length);
   }
   else if(e.key==='l'&&e.ctrlKey){e.preventDefault();COMMANDS.clear();}
-  else if(e.key==='c'&&e.ctrlKey&&session.mode==='password'){
-    e.preventDefault();exitPasswordMode();print('^C','line-dim');blank();
-  }
 });
 
 // keep input focused
