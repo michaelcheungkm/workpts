@@ -7,12 +7,27 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#0a0e0a;--bg2:#0d120d;--green:#39ff6a;--green-dim:#1a7a30;
-  --green-faint:rgba(57,255,106,0.07);--amber:#e8b84b;--red:#ff4f4f;
-  --cyan:#4fffd4;--muted:#3a6640;--text:#b8f0c0;--border:#1e3a22;--border2:#2a5030;
-  --font:'JetBrains Mono',monospace;
+:root,[data-theme="green"]{
+  --bg:#0a0e0a;--bg2:#0d120d;--accent:#39ff6a;--accent-dim:#1a7a30;
+  --accent-faint:rgba(57,255,106,0.07);--muted:#3a6640;--text:#b8f0c0;
+  --border:#1e3a22;--border2:#2a5030;--titlebar:#0d120d;
 }
+[data-theme="red"]{
+  --bg:#0e0a0a;--bg2:#120d0d;--accent:#ff4444;--accent-dim:#7a1a1a;
+  --accent-faint:rgba(255,68,68,0.07);--muted:#6a3030;--text:#f0b8b8;
+  --border:#3a1e1e;--border2:#502a2a;--titlebar:#150d0d;
+}
+[data-theme="blue"]{
+  --bg:#0a0b0e;--bg2:#0d0f12;--accent:#4da6ff;--accent-dim:#1a3a7a;
+  --accent-faint:rgba(77,166,255,0.07);--muted:#2a3a5a;--text:#b8cef0;
+  --border:#1e2a3a;--border2:#2a3a50;--titlebar:#0d0f15;
+}
+[data-theme="black"]{
+  --bg:#000000;--bg2:#0a0a0a;--accent:#cccccc;--accent-dim:#555555;
+  --accent-faint:rgba(200,200,200,0.07);--muted:#444444;--text:#cccccc;
+  --border:#222222;--border2:#333333;--titlebar:#0a0a0a;
+}
+:root{--amber:#e8b84b;--red:#ff4f4f;--cyan:#4fffd4;--font:'JetBrains Mono',monospace;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;overflow:hidden;}
 
 /* CRT */
@@ -21,14 +36,14 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 
 /* TITLEBAR */
 .titlebar{
-  height:38px;background:#0d120d;border-bottom:1px solid var(--border2);
+  height:38px;background:var(--titlebar);border-bottom:1px solid var(--border2);
   display:flex;align-items:center;padding:0 1rem;flex-shrink:0;user-select:none;
 }
 .dots{display:flex;gap:6px;margin-right:12px;}
 .dot{width:12px;height:12px;border-radius:50%;}
 .dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
 .title-text{font-size:12px;color:var(--muted);flex:1;text-align:center;letter-spacing:.05em;}
-.title-text span{color:var(--green);}
+.title-text span{color:var(--accent);}
 .title-user{font-size:11px;color:var(--muted);}
 
 /* LAYOUT */
@@ -38,7 +53,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
   display:flex;flex-direction:column;gap:0;
 }
 .prompt-bar{
-  flex-shrink:0;border-top:1px solid var(--border2);background:#0d120d;
+  flex-shrink:0;border-top:1px solid var(--border2);background:var(--titlebar);
   padding:8px 1.25rem;display:flex;align-items:center;gap:0;
 }
 
@@ -46,7 +61,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .line{display:block;white-space:pre-wrap;word-break:break-word;padding:1px 0;}
 .line-dim{color:var(--muted);}
 .line-err{color:var(--red);}
-.line-ok{color:var(--green);}
+.line-ok{color:var(--accent);}
 .line-amber{color:var(--amber);}
 .line-cyan{color:var(--cyan);}
 .line-cmd{color:var(--text);}
@@ -54,16 +69,16 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 
 /* PROMPT */
 .ps1{white-space:nowrap;flex-shrink:0;margin-right:6px;}
-.ps1-u{color:var(--green);font-weight:700;}
+.ps1-u{color:var(--accent);font-weight:700;}
 .ps1-h{color:var(--cyan);}
 .ps1-p{color:var(--amber);}
-.ps1-s{color:var(--green);}
+.ps1-s{color:var(--accent);}
 #cmdInput{
   flex:1;background:transparent;border:none;outline:none;
-  color:var(--green);font-family:var(--font);font-size:13px;
-  caret-color:var(--green);padding:0;
+  color:var(--accent);font-family:var(--font);font-size:13px;
+  caret-color:var(--accent);padding:0;
   /* kill autocomplete styling */
-  -webkit-text-fill-color:var(--green);
+  -webkit-text-fill-color:var(--accent);
 }
 #cmdInput::-webkit-contacts-auto-fill-button,
 #cmdInput::-webkit-credentials-auto-fill-button{display:none!important;}
@@ -73,13 +88,13 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .t-table th{color:var(--muted);text-align:left;font-size:11px;padding:2px 10px 6px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.08em;font-weight:500;}
 .t-table td{padding:5px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .t-table tr:last-child td{border-bottom:none;}
-.t-table tr:hover td{background:var(--green-faint);}
+.t-table tr:hover td{background:var(--accent-faint);}
 .t-table tr.me td{background:rgba(57,255,106,0.04);}
 .rb{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border:1px solid var(--border2);color:var(--muted);min-width:32px;text-align:center;}
 .rb.r1{color:var(--amber);border-color:rgba(232,184,75,0.4);}
 .rb.r2{color:#c0c0c0;border-color:rgba(192,192,192,0.3);}
 .rb.r3{color:#cd7f32;border-color:rgba(205,127,50,0.3);}
-.prog-f{color:var(--green);}
+.prog-f{color:var(--accent);}
 .prog-e{color:var(--muted);}
 
 /* TASK CHECKLIST */
@@ -89,18 +104,18 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
   border-bottom:1px solid var(--border);cursor:pointer;
 }
 .check-row:last-child{border-bottom:none;}
-.check-row:hover .cb{border-color:var(--green);}
+.check-row:hover .cb{border-color:var(--accent);}
 .cb{
   width:16px;height:16px;border:1px solid var(--border2);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:10px;color:var(--green);transition:all .1s;
+  font-size:10px;color:var(--accent);transition:all .1s;
 }
-.cb.checked{background:var(--green-faint);border-color:var(--green-dim);}
+.cb.checked{background:var(--accent-faint);border-color:var(--accent-dim);}
 .check-name{flex:1;font-size:13px;}
 .check-name.done{color:var(--muted);text-decoration:line-through;}
-.check-pts{font-size:12px;color:var(--green);font-weight:700;white-space:nowrap;}
+.check-pts{font-size:12px;color:var(--accent);font-weight:700;white-space:nowrap;}
 .check-diff{font-size:11px;padding:0 5px;border:1px solid;}
-.d-easy{color:var(--green);border-color:var(--green-dim);}
+.d-easy{color:var(--accent);border-color:var(--accent-dim);}
 .d-medium{color:var(--amber);border-color:rgba(232,184,75,.4);}
 .d-hard{color:#ff8c42;border-color:rgba(255,140,66,.4);}
 .d-expert{color:#ff6ecb;border-color:rgba(255,110,203,.4);}
@@ -125,7 +140,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);}
-::-webkit-scrollbar-thumb:hover{background:var(--green-dim);}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-dim);}
 
 @media(max-width:600px){
   .podium{grid-template-columns:1fr;}
@@ -291,11 +306,12 @@ const COMMANDS={
       ['check &lt;#&gt;',       'check off a task by number'],
       ['uncheck &lt;#&gt;',     'uncheck a task'],
       ['rm &lt;#&gt;',          'remove a task'],
+      ['theme &lt;name&gt;',     'set color theme: green, red, blue, black'],
       ['clear',             'clear the terminal'],
       ['help',              'show this message'],
     ];
     cmds.forEach(([cmd,desc])=>{
-      print(`  <span style="color:var(--green)">${cmd.padEnd(38)}</span><span class="line-dim">${desc}</span>`);
+      print(`  <span style="color:var(--accent)">${cmd.padEnd(38)}</span><span class="line-dim">${desc}</span>`);
     });
     blank();
   },
@@ -305,7 +321,7 @@ const COMMANDS={
     if(!name){print('usage: register &lt;username&gt;','line-err');return;}
     if(allData[name]){print(`error: user "${name}" already exists — use: login ${name}`,'line-err');return;}
     blank();
-    print(`registering new user: <span style="color:var(--green)">${name}</span>`,'line-dim');
+    print(`registering new user: <span style="color:var(--accent)">${name}</span>`,'line-dim');
     askPassword('enter a password: ',async(pw1)=>{
       if(!pw1){print('error: password cannot be empty','line-err');exitPasswordMode();return;}
       askPassword('confirm password:  ',async(pw2)=>{
@@ -317,7 +333,7 @@ const COMMANDS={
         setPrompt(name,'~/tasks');
         exitPasswordMode();
         blank();
-        print(`[OK] registered and logged in as <span style="color:var(--green)">${name}</span>`,'line-ok');
+        print(`[OK] registered and logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
         print('type "tasks" to manage your task list, "help" for all commands','line-dim');
         blank();
       });
@@ -339,7 +355,7 @@ const COMMANDS={
       setPrompt(name,'~/tasks');
       exitPasswordMode();
       blank();
-      print(`[OK] logged in as <span style="color:var(--green)">${name}</span>`,'line-ok');
+      print(`[OK] logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
       print('type "tasks" to manage your task list, "help" for all commands','line-dim');
       blank();
     });
@@ -373,7 +389,7 @@ const COMMANDS={
     if(!session.user){print('not logged in — use: login &lt;name&gt;','line-err');return;}
     const tasks=allData[session.user]?.tasks||[];
     blank();
-    print(`<span class="line-dim"># ── task list for <span style="color:var(--green)">${session.user}</span> ─────────────────</span>`);
+    print(`<span class="line-dim"># ── task list for <span style="color:var(--accent)">${session.user}</span> ─────────────────</span>`);
     print('<span class="line-dim"># use "check &lt;#&gt;" to complete a task, click a row, or "add &lt;name&gt;" to add one</span>');
     blank();
     const clWrap=document.createElement('div');clWrap.id='live-tasks';
@@ -399,7 +415,7 @@ const COMMANDS={
     allData[session.user].tasks.push({name,units,diff,done:false,ts:Date.now()});
     await usersCol.doc(session.user).set({tasks:allData[session.user].tasks},{merge:true});
     blank();
-    print(`[OK] added: <span style="color:var(--green)">${name}</span> <span class="line-dim">(${DIFF_LABELS[diff]||'easy'}, ${units} unit${units!==1?'s':''})</span>`,'line-ok');
+    print(`[OK] added: <span style="color:var(--accent)">${name}</span> <span class="line-dim">(${DIFF_LABELS[diff]||'easy'}, ${units} unit${units!==1?'s':''})</span>`,'line-ok');
     blank();
     COMMANDS.tasks();
   },
@@ -414,7 +430,7 @@ const COMMANDS={
     await usersCol.doc(session.user).set({tasks},{merge:true});
     const pts=taskPts(tasks[idx],true,tasks);
     blank();
-    print(`[✓] <span style="color:var(--green)">${tasks[idx].name}</span> — earned <span style="color:var(--amber);font-weight:700">+${pts} pts</span>`,'line-ok');
+    print(`[✓] <span style="color:var(--accent)">${tasks[idx].name}</span> — earned <span style="color:var(--amber);font-weight:700">+${pts} pts</span>`,'line-ok');
     blank();
     COMMANDS.tasks();
   },
@@ -445,6 +461,21 @@ const COMMANDS={
     print(`[OK] removed: ${name}`,'line-ok');
     blank();
     COMMANDS.tasks();
+  },
+
+  theme(args){
+    const name=(args[0]||'').toLowerCase();
+    const valid=['green','red','blue','black'];
+    if(!name||!valid.includes(name)){
+      print('usage: theme &lt;name&gt;','line-err');
+      print('available themes: '+valid.map(t=>`<span style="color:var(--accent)">${t}</span>`).join('  '));
+      blank();return;
+    }
+    document.documentElement.setAttribute('data-theme',name);
+    localStorage.setItem('wp_theme',name);
+    blank();
+    print(`[OK] theme set to <span style="color:var(--accent)">${name}</span>`,'line-ok');
+    blank();
   },
 
   clear(){clearOut();}
@@ -513,8 +544,8 @@ function buildLbTable(entries,maxPts){
     const rc=i<3?` r${i+1}`:'';
     t+=`<tr class="${isMe?'me':''}">
       <td><span class="rb${rc}">${i<3?['#1','#2','#3'][i]:`#${i+1}`}</span></td>
-      <td><span style="color:${isMe?'var(--green)':'var(--text)'};font-weight:${isMe?700:400}">${e.name}${isMe?' ◆':''}</span></td>
-      <td><span style="color:var(--green);font-weight:700">${e.points.toLocaleString()}</span></td>
+      <td><span style="color:${isMe?'var(--accent)':'var(--text)'};font-weight:${isMe?700:400}">${e.name}${isMe?' ◆':''}</span></td>
+      <td><span style="color:var(--accent);font-weight:700">${e.points.toLocaleString()}</span></td>
       <td class="line-dim">${e.done}/${e.tasks}</td>
       <td>${progBar(pct)}</td>
     </tr>`;
@@ -538,10 +569,12 @@ async function runCmd(raw){
   histIdx=-1;draftCmd='';
 
   const [cmd,...args]=input.split(/\s+/);
-  const fn=COMMANDS[cmd.toLowerCase()];
+  const aliases={'lb':'leaderboard','t':'tasks','h':'help'};
+  const resolved=aliases[cmd.toLowerCase()]||cmd.toLowerCase();
+  const fn=COMMANDS[resolved];
   if(fn)await fn(args);
   else{
-    print(`bash: ${cmd}: command not found — type "help" for available commands`,'line-err');
+    print(`bash: ${resolved}: command not found — type "help" for available commands`,'line-err');
     blank();
   }
 }
@@ -587,19 +620,22 @@ async function boot(){
     print(e.message,'line-dim');
     blank();
   }
+  // restore saved theme
+  const savedTheme=localStorage.getItem('wp_theme');
+  if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);
   startLive();
 
-  print('<span style="color:var(--green)"> __    __ ___  ____  __ __ ____  ____  _____</span>');
-  print('<span style="color:var(--green)"> \\ \\  / // _ \\|  _ \\|  |/ /|  _ \\|_  _|/ ___/</span>');
-  print('<span style="color:var(--green)">  \\ \\/ /| | | | |_) |     / | |_) | | | \\___ \\</span>');
-  print('<span style="color:var(--green)">   \\  / | |_| |  _ &lt;| |\\ \\ |  __/  | |  ___) |</span>');
-  print('<span style="color:var(--green)">    \\/   \\___/|_| \\_|_| \\_||_|    |___||____/ </span>');
+  print('<span style="color:var(--accent)"> __    __ ___  ____  __ __ ____  ____  _____</span>');
+  print('<span style="color:var(--accent)"> \\ \\  / // _ \\|  _ \\|  |/ /|  _ \\|_  _|/ ___/</span>');
+  print('<span style="color:var(--accent)">  \\ \\/ /| | | | |_) |     / | |_) | | | \\___ \\</span>');
+  print('<span style="color:var(--accent)">   \\  / | |_| |  _ &lt;| |\\ \\ |  __/  | |  ___) |</span>');
+  print('<span style="color:var(--accent)">    \\/   \\___/|_| \\_|_| \\_||_|    |___||____/ </span>');
   blank();
   print('work points tracker — firebase edition','line-dim');
   print(`<span class="line-dim">${Object.keys(allData).filter(k=>allData[k].passwordHash).length} registered user(s) | ${new Date().toLocaleString()}</span>`);
   blank();
-  print('type <span style="color:var(--green)">help</span> for available commands');
-  print('type <span style="color:var(--green)">register &lt;name&gt;</span> to create an account or <span style="color:var(--green)">login &lt;name&gt;</span> to sign in');
+  print('type <span style="color:var(--accent)">help</span> for available commands');
+  print('type <span style="color:var(--accent)">register &lt;name&gt;</span> to create an account or <span style="color:var(--accent)">login &lt;name&gt;</span> to sign in');
   blank();
 }
 
