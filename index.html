@@ -7,64 +7,39 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root,[data-theme="green"]{
-  --bg:#0a0e0a;--bg2:#0d120d;--accent:#39ff6a;--accent-dim:#1a7a30;
-  --accent-faint:rgba(57,255,106,0.07);--muted:#3a6640;--text:#b8f0c0;
-  --border:#1e3a22;--border2:#2a5030;--titlebar:#0d120d;
-}
-[data-theme="red"]{
-  --bg:#0e0a0a;--bg2:#120d0d;--accent:#ff4444;--accent-dim:#7a1a1a;
-  --accent-faint:rgba(255,68,68,0.07);--muted:#6a3030;--text:#f0b8b8;
-  --border:#3a1e1e;--border2:#502a2a;--titlebar:#150d0d;
-}
-[data-theme="blue"]{
-  --bg:#0a0b0e;--bg2:#0d0f12;--accent:#4da6ff;--accent-dim:#1a3a7a;
-  --accent-faint:rgba(77,166,255,0.07);--muted:#2a3a5a;--text:#b8cef0;
-  --border:#1e2a3a;--border2:#2a3a50;--titlebar:#0d0f15;
-}
-[data-theme="black"]{
-  --bg:#000000;--bg2:#0a0a0a;--accent:#cccccc;--accent-dim:#555555;
-  --accent-faint:rgba(200,200,200,0.07);--muted:#444444;--text:#cccccc;
-  --border:#222222;--border2:#333333;--titlebar:#0a0a0a;
-}
+:root,[data-theme="green"]{--bg:#0a0e0a;--bg2:#0d120d;--accent:#39ff6a;--accent-dim:#1a7a30;--accent-faint:rgba(57,255,106,0.07);--muted:#3a6640;--text:#b8f0c0;--border:#1e3a22;--border2:#2a5030;--titlebar:#0d120d;}
+[data-theme="red"]{--bg:#0e0a0a;--bg2:#120d0d;--accent:#ff4444;--accent-dim:#7a1a1a;--accent-faint:rgba(255,68,68,0.07);--muted:#6a3030;--text:#f0b8b8;--border:#3a1e1e;--border2:#502a2a;--titlebar:#150d0d;}
+[data-theme="blue"]{--bg:#0a0b0e;--bg2:#0d0f12;--accent:#4da6ff;--accent-dim:#1a3a7a;--accent-faint:rgba(77,166,255,0.07);--muted:#2a3a5a;--text:#b8cef0;--border:#1e2a3a;--border2:#2a3a50;--titlebar:#0d0f15;}
+[data-theme="black"]{--bg:#000000;--bg2:#0a0a0a;--accent:#cccccc;--accent-dim:#555555;--accent-faint:rgba(200,200,200,0.07);--muted:#444444;--text:#cccccc;--border:#222222;--border2:#333333;--titlebar:#0a0a0a;}
 :root{--amber:#e8b84b;--red:#ff4f4f;--cyan:#4fffd4;--font:'JetBrains Mono',monospace;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;overflow:hidden;}
-
-/* CRT */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.5) 100%);}
 
 /* TITLEBAR */
-.titlebar{
-  height:38px;background:var(--titlebar);border-bottom:1px solid var(--border2);
-  display:flex;align-items:center;padding:0 1rem;flex-shrink:0;user-select:none;
-}
-.dots{display:flex;gap:6px;margin-right:12px;}
+.titlebar{height:38px;background:var(--titlebar);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 1rem;flex-shrink:0;user-select:none;gap:8px;}
+.dots{display:flex;gap:6px;margin-right:4px;}
 .dot{width:12px;height:12px;border-radius:50%;}
 .dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
 .title-text{font-size:12px;color:var(--muted);flex:1;text-align:center;letter-spacing:.05em;}
 .title-text span{color:var(--accent);}
+.title-boss{font-size:11px;color:var(--red);animation:flicker 3s infinite;}
+@keyframes flicker{0%,95%,100%{opacity:1;}96%,98%{opacity:.4;}}
+.title-ver{font-size:11px;color:var(--muted);}
 .title-user{font-size:11px;color:var(--muted);}
 
 /* LAYOUT */
 .shell{display:flex;flex-direction:column;height:calc(100vh - 38px);}
-.output-area{
-  flex:1;overflow-y:auto;padding:1rem 1.25rem 0.5rem;
-  display:flex;flex-direction:column;gap:0;
-}
-.prompt-bar{
-  flex-shrink:0;border-top:1px solid var(--border2);background:var(--titlebar);
-  padding:8px 1.25rem;display:flex;align-items:center;gap:0;
-}
+.output-area{flex:1;overflow-y:auto;padding:1rem 1.25rem .5rem;display:flex;flex-direction:column;}
+.prompt-bar{flex-shrink:0;border-top:1px solid var(--border2);background:var(--titlebar);padding:8px 1.25rem;display:flex;align-items:center;}
 
-/* OUTPUT LINES */
+/* LINES */
 .line{display:block;white-space:pre-wrap;word-break:break-word;padding:1px 0;}
 .line-dim{color:var(--muted);}
 .line-err{color:var(--red);}
 .line-ok{color:var(--accent);}
 .line-amber{color:var(--amber);}
 .line-cyan{color:var(--cyan);}
-.line-cmd{color:var(--text);}
 .line-blank{height:6px;display:block;}
 
 /* PROMPT */
@@ -73,15 +48,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .ps1-h{color:var(--cyan);}
 .ps1-p{color:var(--amber);}
 .ps1-s{color:var(--accent);}
-#cmdInput{
-  flex:1;background:transparent;border:none;outline:none;
-  color:var(--accent);font-family:var(--font);font-size:13px;
-  caret-color:var(--accent);padding:0;
-  /* kill autocomplete styling */
-  -webkit-text-fill-color:var(--accent);
-}
-#cmdInput::-webkit-contacts-auto-fill-button,
-#cmdInput::-webkit-credentials-auto-fill-button{display:none!important;}
+#cmdInput{flex:1;background:transparent;border:none;outline:none;color:var(--accent);font-family:var(--font);font-size:13px;caret-color:var(--accent);padding:0;-webkit-text-fill-color:var(--accent);}
+#cmdInput::-webkit-contacts-auto-fill-button,#cmdInput::-webkit-credentials-auto-fill-button{display:none!important;}
 
 /* TABLES */
 .t-table{width:100%;border-collapse:collapse;margin:4px 0;}
@@ -89,27 +57,22 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .t-table td{padding:5px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .t-table tr:last-child td{border-bottom:none;}
 .t-table tr:hover td{background:var(--accent-faint);}
-.t-table tr.me td{background:rgba(57,255,106,0.04);}
+.t-table tr.me td{background:var(--accent-faint);}
 .rb{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border:1px solid var(--border2);color:var(--muted);min-width:32px;text-align:center;}
-.rb.r1{color:var(--amber);border-color:rgba(232,184,75,0.4);}
-.rb.r2{color:#c0c0c0;border-color:rgba(192,192,192,0.3);}
-.rb.r3{color:#cd7f32;border-color:rgba(205,127,50,0.3);}
+.rb.r1{color:var(--amber);border-color:rgba(232,184,75,.4);}
+.rb.r2{color:#c0c0c0;border-color:rgba(192,192,192,.3);}
+.rb.r3{color:#cd7f32;border-color:rgba(205,127,50,.3);}
 .prog-f{color:var(--accent);}
 .prog-e{color:var(--muted);}
+.prog-hp{color:var(--red);}
+.prog-hp-e{color:var(--muted);}
 
-/* TASK CHECKLIST */
+/* CHECKLIST */
 .checklist{margin:4px 0;}
-.check-row{
-  display:flex;align-items:center;gap:10px;padding:5px 0;
-  border-bottom:1px solid var(--border);cursor:pointer;
-}
+.check-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer;}
 .check-row:last-child{border-bottom:none;}
 .check-row:hover .cb{border-color:var(--accent);}
-.cb{
-  width:16px;height:16px;border:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:10px;color:var(--accent);transition:all .1s;
-}
+.cb{width:16px;height:16px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:var(--accent);transition:all .1s;}
 .cb.checked{background:var(--accent-faint);border-color:var(--accent-dim);}
 .check-name{flex:1;font-size:13px;}
 .check-name.done{color:var(--muted);text-decoration:line-through;}
@@ -120,11 +83,181 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .d-hard{color:#ff8c42;border-color:rgba(255,140,66,.4);}
 .d-expert{color:#ff6ecb;border-color:rgba(255,110,203,.4);}
 
+/* BOSS */
+.boss-card{border:1px solid rgba(255,79,79,.35);padding:12px 14px;margin:6px 0;background:rgba(255,30,30,.04);}
+.boss-name{font-size:16px;font-weight:700;color:var(--red);margin-bottom:2px;}
+.boss-desc{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.boss-hp-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.boss-hp-bar{flex:1;height:12px;background:var(--border2);position:relative;overflow:hidden;}
+.boss-hp-fill{height:100%;background:var(--red);transition:width .5s;position:relative;}
+.boss-hp-fill::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(0,0,0,.2) 8px,rgba(0,0,0,.2) 9px);}
+.boss-hp-text{font-size:12px;font-weight:700;color:var(--red);white-space:nowrap;}
+.boss-meta{display:flex;gap:16px;font-size:11px;color:var(--muted);margin-top:6px);}
+.boss-slain{border-color:var(--amber);background:rgba(232,184,75,.04);}
+.boss-slain .boss-name{color:var(--amber);}
+
+/* CRASH OVERLAY (weekly reset fail) */
+.crash-overlay{position:fixed;inset:0;background:#000;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.crash-title{font-size:22px;font-weight:700;color:var(--red);margin-bottom:1rem;animation:blink-red 1s step-end infinite;}
+@keyframes blink-red{50%{opacity:0;}}
+
+/* ═══════════════════════════════════════════════
+   DDOS / STUN SYSTEM
+═══════════════════════════════════════════════ */
+
+/* Stun overlay — glitchy but readable */
+#stunOverlay{
+  display:none;
+  position:fixed;inset:0;z-index:8000;pointer-events:all;
+  background:transparent;
+}
+#stunOverlay.active{display:block;}
+
+/* Glitch filter on shell when stunned */
+.shell.stunned{
+  animation:glitch-shake 0.15s infinite;
+  filter:hue-rotate(0deg);
+}
+@keyframes glitch-shake{
+  0%  {transform:translate(0,0) skewX(0deg);}
+  10% {transform:translate(-3px,1px) skewX(-1deg);}
+  20% {transform:translate(3px,-1px) skewX(1deg);}
+  30% {transform:translate(-2px,2px) skewX(0deg);}
+  40% {transform:translate(2px,-2px) skewX(-0.5deg);}
+  50% {transform:translate(-1px,1px) skewX(0.5deg);}
+  60% {transform:translate(3px,0px) skewX(-1deg);}
+  70% {transform:translate(-3px,-1px) skewX(1deg);}
+  80% {transform:translate(1px,2px) skewX(0deg);}
+  90% {transform:translate(-2px,0px) skewX(-0.5deg);}
+  100%{transform:translate(0,0) skewX(0deg);}
+}
+
+/* Static noise canvas behind stun badge */
+#stunNoise{position:fixed;inset:0;z-index:8001;pointer-events:none;opacity:0.06;}
+
+/* Red scan line during stun */
+#stunScan{
+  position:fixed;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,rgba(255,40,40,.8),transparent);
+  z-index:8002;pointer-events:none;
+  animation:scan 2s linear infinite;
+  display:none;
+}
+@keyframes scan{from{top:0;}to{top:100vh;}}
+#stunScan.active{display:block;}
+
+/* [HACKER DETECTED] badge */
+#stunBadge{
+  display:none;
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:8003;
+  text-align:center;
+  pointer-events:none;
+  animation:badge-flicker 0.8s step-end infinite;
+}
+@keyframes badge-flicker{0%,60%,100%{opacity:1;}61%,80%{opacity:.2;}81%,99%{opacity:.8;}}
+#stunBadge.active{display:block;}
+.stun-badge-title{
+  font-size:clamp(18px,4vw,32px);font-weight:700;
+  color:#ff2020;letter-spacing:.15em;
+  text-shadow:0 0 20px rgba(255,32,32,.8),0 0 40px rgba(255,32,32,.4);
+  border:2px solid #ff2020;
+  padding:.5rem 1.5rem;
+  background:rgba(0,0,0,.85);
+  white-space:nowrap;
+}
+.stun-timer{font-size:13px;color:#ff6060;margin-top:8px;letter-spacing:.05em;}
+.stun-attacker{font-size:11px;color:#ff4040;margin-top:4px;opacity:.7;}
+
+/* RGB split glitch lines */
+#stunGlitch{
+  position:fixed;inset:0;z-index:8001;pointer-events:none;
+  display:none;overflow:hidden;
+}
+#stunGlitch.active{display:block;}
+.glitch-line{
+  position:absolute;left:0;right:0;height:2px;
+  background:rgba(255,0,0,.5);
+  animation:glitch-line-anim 0.3s step-end infinite;
+}
+@keyframes glitch-line-anim{
+  0%  {top:15%;opacity:1;width:60%;left:20%;}
+  14% {top:42%;opacity:.5;width:80%;left:5%;background:rgba(0,255,200,.4);}
+  28% {top:73%;opacity:1;width:40%;left:45%;background:rgba(255,0,100,.5);}
+  42% {top:28%;opacity:.7;width:90%;left:0;background:rgba(255,200,0,.3);}
+  57% {top:61%;opacity:1;width:55%;left:30%;background:rgba(0,100,255,.4);}
+  71% {top:88%;opacity:.4;width:70%;left:10%;background:rgba(255,0,0,.5);}
+  85% {top:5%; opacity:1;width:45%;left:40%;background:rgba(0,255,100,.4);}
+  100%{top:50%;opacity:.6;width:65%;left:15%;background:rgba(255,0,200,.5);}
+}
+
+/* ═══════════════════════════════════════════════
+   MINIGAME OVERLAY
+═══════════════════════════════════════════════ */
+#minigame{
+  display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,.92);
+  align-items:center;justify-content:center;flex-direction:column;gap:1rem;
+}
+#minigame.active{display:flex;}
+.mg-window{
+  border:1px solid var(--red);
+  background:#0a0000;
+  padding:2rem 2.5rem;
+  max-width:480px;width:90%;
+}
+.mg-title{color:var(--red);font-size:16px;font-weight:700;margin-bottom:.25rem;}
+.mg-subtitle{color:var(--muted);font-size:11px;margin-bottom:1.5rem;}
+.mg-body{margin-bottom:1.5rem;}
+.mg-target{
+  font-size:20px;font-weight:700;letter-spacing:.3em;
+  color:var(--amber);margin:1rem 0;
+  text-align:center;font-family:var(--font);
+}
+.mg-input-row{display:flex;gap:8px;align-items:center;}
+.mg-input{
+  flex:1;background:transparent;border:none;border-bottom:1px solid var(--red);
+  color:var(--red);font-family:var(--font);font-size:16px;padding:4px 6px;
+  outline:none;caret-color:var(--red);letter-spacing:.2em;
+}
+.mg-btn{
+  background:transparent;border:1px solid var(--red);color:var(--red);
+  font-family:var(--font);font-size:13px;padding:5px 14px;cursor:pointer;
+}
+.mg-btn:hover{background:rgba(255,79,79,.1);}
+.mg-status{font-size:12px;min-height:18px;margin-top:.5rem;}
+.mg-ok{color:var(--accent);}
+.mg-fail{color:var(--red);}
+.mg-progress{display:flex;gap:6px;margin-bottom:1rem;}
+.mg-dot{width:10px;height:10px;border:1px solid var(--muted);}
+.mg-dot.done{background:var(--accent);border-color:var(--accent);}
+.mg-dot.fail{background:var(--red);border-color:var(--red);}
+/* reaction game */
+.mg-react-box{
+  width:100%;height:80px;background:var(--border);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--muted);cursor:pointer;transition:background .1s;
+  user-select:none;
+}
+.mg-react-box.go{background:rgba(57,255,106,.15);color:var(--accent);font-size:18px;font-weight:700;}
+.mg-react-box.miss{background:rgba(255,79,79,.15);color:var(--red);}
+/* binary puzzle */
+.mg-bits{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:.75rem 0;}
+.mg-bit{
+  width:32px;height:32px;border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;cursor:pointer;
+  transition:all .1s;user-select:none;
+}
+.mg-bit.on{background:rgba(255,79,79,.15);border-color:var(--red);color:var(--red);}
+.mg-bit.off{color:var(--muted);}
+.mg-bit:hover{border-color:var(--text);}
+
 /* PODIUM */
 .podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin:6px 0 10px;}
 .pc{background:var(--bg2);padding:10px 12px;text-align:center;}
 .pc.p1{background:rgba(232,184,75,.05);}
-.pc-sym{font-size:12px;margin-bottom:3px;}
 .pc-name{font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pc-pts{font-size:16px;font-weight:700;}
 .p1 .pc-pts{color:var(--amber);}
@@ -132,21 +265,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 .p3 .pc-pts{color:#cd7f32;}
 .pc-tasks{font-size:11px;color:var(--muted);}
 
-/* SPINNER */
-.spin{display:inline-block;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent-dim);}
-
-@media(max-width:600px){
-  .podium{grid-template-columns:1fr;}
-  .output-area{padding:.75rem .75rem .5rem;}
-  .prompt-bar{padding:8px .75rem;}
-}
+@media(max-width:600px){.podium{grid-template-columns:1fr;}.output-area{padding:.75rem .75rem .5rem;}.prompt-bar{padding:8px .75rem;}}
 </style>
 </head>
 <body>
@@ -154,19 +277,43 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;b
 <div class="titlebar">
   <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
   <div class="title-text">workpts@<span>terminal</span> — bash</div>
-  <div style="font-size:11px;color:var(--muted);margin-left:auto;padding-left:1rem;">v1.5</div><div class="title-user" id="titleUser" style="margin-left:8px;"></div>
+  <div class="title-boss" id="titleBoss"></div>
+  <div class="title-ver">v2.1</div>
+  <div class="title-user" id="titleUser"></div>
 </div>
 
-<div class="shell">
+<div class="shell" id="shell">
   <div class="output-area" id="out"></div>
   <div class="prompt-bar">
-    <span class="ps1" id="ps1">
+    <span class="ps1">
       <span class="ps1-u" id="ps1u">guest</span><span class="ps1-h">@workpts</span><span style="color:var(--muted)">:</span><span class="ps1-p" id="ps1p">~</span><span class="ps1-s">$ </span>
     </span>
-    <input id="cmdInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="" data-lpignore="true" data-form-type="other" />
+    <input id="cmdInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" />
   </div>
 </div>
 
+<!-- stun FX elements -->
+<canvas id="stunNoise"></canvas>
+<div id="stunScan"></div>
+<div id="stunGlitch"><div class="glitch-line"></div></div>
+<div id="stunBadge">
+  <div class="stun-badge-title">[ HACKER DETECTED ]</div>
+  <div class="stun-timer" id="stunTimerText">system locked — 15:00 remaining</div>
+  <div class="stun-attacker" id="stunAttackerText"></div>
+</div>
+<div id="stunOverlay"></div>
+
+<!-- minigame overlay -->
+<div id="minigame">
+  <div class="mg-window">
+    <div class="mg-title" id="mgTitle">SECURITY BYPASS REQUIRED</div>
+    <div class="mg-subtitle" id="mgSubtitle">complete the challenge to execute ddos</div>
+    <div class="mg-body" id="mgBody"></div>
+    <div class="mg-status" id="mgStatus"></div>
+  </div>
+</div>
+
+<script src="bosses.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
@@ -178,25 +325,30 @@ firebase.initializeApp({
   messagingSenderId:"366980877812",
   appId:"1:366980877812:web:34d0df0519b94e50d43da1"
 });
-const db = firebase.firestore();
-const usersCol = db.collection('users');
+const db=firebase.firestore();
+const usersCol=db.collection('users');
+const bossCol=db.collection('boss');
+const ddosCol=db.collection('ddos'); // { target: { stunUntil, attackedBy, lastAttack:{[attacker]:ts} } }
 
-// ── State ─────────────────────────────────────────────────────────────────
-let session = { user: null, mode: 'cmd' }; // mode: cmd | password
-let passwordCallback = null;
-let cmdHistory = [], histIdx = -1, draftCmd = '';
-let allData = {};
-let liveUnsub = null;
-let lastView = null; // track which view is currently showing
+// ── State ──────────────────────────────────────────────────────────────────
+let session={user:null,mode:'cmd'};
+let passwordCallback=null, _pwReal='';
+let cmdHistory=[],histIdx=-1,draftCmd='';
+let allData={}, bossState=null;
+let liveUnsub=null,bossUnsub=null,ddosUnsub=null;
+let stunState=null;       // current user's stun doc
+let stunInterval=null;    // timer for countdown
+let noiseAnim=null;       // rAF for static noise
+const STUN_DURATION=15*60*1000; // 15 min in ms
 
+// ── Scoring ────────────────────────────────────────────────────────────────
 const DIFF_LABELS={'1':'easy','1.5':'medium','2.5':'hard','4':'expert'};
 const DIFF_CLS={'1':'d-easy','1.5':'d-medium','2.5':'d-hard','4':'d-expert'};
 const DIFF_VALS={'easy':1,'medium':1.5,'hard':2.5,'expert':4,'e':1,'m':1.5,'h':2.5,'x':4};
 
-// ── Scoring ───────────────────────────────────────────────────────────────
 function calcPoints(tasks){
   let total=0,hist=[];
-  for(const t of (tasks||[])){
+  for(const t of(tasks||[])){
     if(!t.done)continue;
     const base=t.units*parseFloat(t.diff)*10;
     const avg=hist.length?hist.reduce((a,b)=>a+b,0)/hist.length:null;
@@ -205,128 +357,453 @@ function calcPoints(tasks){
   }
   return total;
 }
-function taskPts(t,doneOnly,all){
-  const doneTasks=(all||[]).filter(x=>x.done);
-  const idx=doneTasks.indexOf(t);
-  if(idx<0){
-    // preview pts if checked
-    const base=t.units*parseFloat(t.diff)*10;
-    const hist=doneTasks.map(x=>x.units*parseFloat(x.diff)*10);
-    const avg=hist.length?hist.reduce((a,b)=>a+b,0)/hist.length:null;
-    const bonus=(avg!==null&&base>avg)?Math.round((base-avg)*.3):0;
-    return Math.round(base+bonus);
-  }
-  const prior=doneTasks.slice(0,idx);
+function taskPts(t,all){
+  const done=(all||[]).filter(x=>x.done);
   const base=t.units*parseFloat(t.diff)*10;
-  const avg=prior.length?prior.map(x=>x.units*parseFloat(x.diff)*10).reduce((a,b)=>a+b,0)/prior.length:null;
+  const hist=done.map(x=>x.units*parseFloat(x.diff)*10);
+  const avg=hist.length?hist.reduce((a,b)=>a+b,0)/hist.length:null;
   const bonus=(avg!==null&&base>avg)?Math.round((base-avg)*.3):0;
   return Math.round(base+bonus);
 }
-
 function progBar(pct,len=16){
   const f=Math.round((pct/100)*len);
   return `<span class="prog-f">${'█'.repeat(f)}</span><span class="prog-e">${'░'.repeat(len-f)}</span> ${pct}%`;
 }
 
-// ── Hashing ───────────────────────────────────────────────────────────────
+// ── Hash ───────────────────────────────────────────────────────────────────
 async function sha256(str){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// ── Live listener ─────────────────────────────────────────────────────────
+// ── Boss helpers (unchanged) ───────────────────────────────────────────────
+function getWeekNumber(){const now=new Date();const start=new Date(now.getFullYear(),0,1);return Math.ceil(((now-start)/86400000+start.getDay()+1)/7);}
+function getMondayTs(){const d=new Date();const day=d.getDay();const diff=d.getDate()-(day===0?6:day-1);const mon=new Date(d.setDate(diff));mon.setHours(0,0,0,0);return mon.getTime();}
+function getBossForWeek(){return BOSSES[(getWeekNumber()-1)%BOSSES.length];}
+async function spawnNewBoss(){const boss=getBossForWeek();const state={bossId:boss.id,hp:boss.health,maxHp:boss.health,weekStart:getMondayTs(),slainAt:null,damage:{},rewarded:false};await bossCol.doc('current').set(state);bossState=state;updateTitleBoss();}
+async function checkWeeklyReset(){if(!bossState)return;if(bossState.weekStart>=getMondayTs())return;bossState.hp<=0?await distributeRewards():await triggerCrash();await spawnNewBoss();}
+async function distributeRewards(){if(!bossState||bossState.rewarded)return;const boss=getBossForWeek();const damage=bossState.damage||{};const totalDmg=Object.values(damage).reduce((a,b)=>a+b,0)||1;const pool=boss.reward||2000;for(const[user,dmg]of Object.entries(damage)){if(!allData[user])continue;const share=Math.round((dmg/totalDmg)*pool);if(share<=0)continue;const tasks=allData[user].tasks||[];tasks.push({name:`★ Boss kill bonus (${bossState.bossId})`,units:1,diff:'1',done:true,ts:Date.now(),_pts:share});await usersCol.doc(user).set({tasks},{merge:true});}await bossCol.doc('current').update({rewarded:true});}
+async function triggerCrash(){const batch=db.batch();for(const[user,data]of Object.entries(allData)){if(!data.passwordHash)continue;const tasks=(data.tasks||[]).map(t=>({...t,done:false}));batch.set(usersCol.doc(user),{...data,tasks},{merge:false});}await batch.commit();showCrashOverlay();}
+function showCrashOverlay(){const el=document.createElement('div');el.className='crash-overlay';el.innerHTML=`<div class="crash-title">⚠ SYSTEM FAILURE ⚠</div><div style="color:var(--red);font-size:14px;text-align:center;max-width:500px"><div style="margin-bottom:1rem">The weekly boss was not defeated.</div><div style="color:#666;font-size:12px;margin-bottom:.5rem">kernel panic: productivity.exe has stopped responding</div><div style="color:#666;font-size:12px;margin-bottom:2rem">all points reset to 0x00000000</div><div style="font-size:11px;color:#444">press any key to reboot...</div></div>`;document.body.appendChild(el);const d=()=>{el.remove();document.removeEventListener('keydown',d);};setTimeout(()=>document.addEventListener('keydown',d),800);}
+async function dealDamage(pts){if(!bossState||bossState.hp<=0)return;const newHp=Math.max(0,bossState.hp-pts);const dmgMap={...bossState.damage};dmgMap[session.user]=(dmgMap[session.user]||0)+pts;const update={hp:newHp,damage:dmgMap};if(newHp===0)update.slainAt=Date.now();await bossCol.doc('current').update(update);bossState={...bossState,...update};if(newHp===0){const boss=getBossForWeek();blank();print('████████████████████████████████████████','line-err');print(`  ☠  BOSS SLAIN: ${boss.name.toUpperCase()}  ☠`,'line-amber');print('████████████████████████████████████████','line-err');print(`  distributing ${boss.reward.toLocaleString()} bonus points...`,'line-dim');blank();await distributeRewards();await bossCol.doc('current').update({rewarded:true});}}
+function updateTitleBoss(){const el=document.getElementById('titleBoss');if(!bossState||bossState.hp<=0){el.textContent='';return;}const boss=BOSSES.find(b=>b.id===bossState.bossId)||getBossForWeek();el.textContent=`☠ ${boss.name} [${Math.round((bossState.hp/bossState.maxHp)*100)}% HP]`;}
+
+// ══════════════════════════════════════════════════════════════════
+// DDOS / STUN SYSTEM
+// ══════════════════════════════════════════════════════════════════
+
+// ── Noise canvas ──────────────────────────────────────────────────
+function startNoise(){
+  const c=document.getElementById('stunNoise');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  const ctx=c.getContext('2d');
+  function draw(){
+    const img=ctx.createImageData(c.width,c.height);
+    const d=img.data;
+    for(let i=0;i<d.length;i+=4){
+      const v=Math.random()>0.5?255:0;
+      d[i]=v;d[i+1]=0;d[i+2]=0;d[i+3]=Math.random()*30;
+    }
+    ctx.putImageData(img,0,0);
+    noiseAnim=requestAnimationFrame(draw);
+  }
+  draw();
+}
+function stopNoise(){
+  if(noiseAnim){cancelAnimationFrame(noiseAnim);noiseAnim=null;}
+  const c=document.getElementById('stunNoise');
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+}
+
+// ── Apply / remove stun visuals ────────────────────────────────────
+function applyStunVisuals(attackedBy){
+  document.getElementById('shell').classList.add('stunned');
+  document.getElementById('stunOverlay').classList.add('active');
+  document.getElementById('stunScan').classList.add('active');
+  document.getElementById('stunGlitch').classList.add('active');
+  document.getElementById('stunBadge').classList.add('active');
+  document.getElementById('stunAttackerText').textContent=`attack originated from: ${attackedBy||'unknown'}`;
+  document.getElementById('cmdInput').disabled=true;
+  startNoise();
+}
+function removeStunVisuals(){
+  document.getElementById('shell').classList.remove('stunned');
+  document.getElementById('stunOverlay').classList.remove('active');
+  document.getElementById('stunScan').classList.remove('active');
+  document.getElementById('stunGlitch').classList.remove('active');
+  document.getElementById('stunBadge').classList.remove('active');
+  document.getElementById('cmdInput').disabled=false;
+  document.getElementById('cmdInput').focus();
+  stopNoise();
+  if(stunInterval){clearInterval(stunInterval);stunInterval=null;}
+}
+function startStunCountdown(until,attackedBy){
+  applyStunVisuals(attackedBy);
+  function tick(){
+    const left=until-Date.now();
+    if(left<=0){removeStunVisuals();print('','');print('[OK] stun expired — system restored','line-ok');blank();return;}
+    const m=Math.floor(left/60000).toString().padStart(2,'0');
+    const s=Math.floor((left%60000)/1000).toString().padStart(2,'0');
+    document.getElementById('stunTimerText').textContent=`system locked — ${m}:${s} remaining`;
+  }
+  tick();
+  stunInterval=setInterval(tick,1000);
+}
+
+// ── Check if current user is stunned on load / update ─────────────
+function checkStunState(doc){
+  if(!doc||!session.user)return;
+  const data=doc;
+  const until=data.stunUntil||0;
+  if(until>Date.now()){
+    // currently stunned
+    startStunCountdown(until,data.attackedBy);
+  } else if(stunInterval){
+    // stun expired externally
+    removeStunVisuals();
+  }
+}
+
+// ── DDOS live listener ─────────────────────────────────────────────
+function startDdosListener(){
+  if(!session.user)return;
+  if(ddosUnsub)ddosUnsub();
+  ddosUnsub=ddosCol.doc(session.user).onSnapshot(snap=>{
+    if(snap.exists){
+      const d=snap.data();
+      const until=d.stunUntil||0;
+      if(until>Date.now()){
+        // we got hit — start or extend stun
+        startStunCountdown(until,d.attackedBy);
+      } else if(stunInterval){
+        removeStunVisuals();
+      }
+    }
+  });
+}
+
+// ── Execute DDoS after minigame win ───────────────────────────────
+async function executeDdos(target){
+  if(!allData[target]){print(`error: user "${target}" not found`,'line-err');return;}
+  // check cooldown — once per day
+  const coolSnap=await ddosCol.doc(`cd_${session.user}`).get();
+  if(coolSnap.exists){
+    const lastMs=coolSnap.data().lastDdos||0;
+    const todayStart=new Date();todayStart.setHours(0,0,0,0);
+    if(lastMs>=todayStart.getTime()){
+      const nextReset=new Date(todayStart.getTime()+86400000);
+      const diff=nextReset-Date.now();
+      const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000);
+      print(`error: ddos cooldown active — resets in ${h}h ${m}m`,'line-err');
+      blank();return;
+    }
+  }
+  // get current stun state to stack
+  const targetSnap=await ddosCol.doc(target).get();
+  const currentUntil=(targetSnap.exists&&targetSnap.data().stunUntil)||0;
+  const base=Math.max(Date.now(),currentUntil);
+  const newUntil=base+STUN_DURATION;
+  await ddosCol.doc(target).set({stunUntil:newUntil,attackedBy:session.user},{ merge:false });
+  await ddosCol.doc(`cd_${session.user}`).set({lastDdos:Date.now()},{merge:true});
+  blank();
+  print(`[✓] DDoS packet delivered to <span style="color:var(--red)">${target}</span>`,'line-ok');
+  const stacks=targetSnap.exists&&currentUntil>Date.now()?` (stacked +15m)`:' (15 min stun)';
+  print(`    stun applied${stacks}`,'line-dim');
+  blank();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MINIGAME ENGINE
+// ══════════════════════════════════════════════════════════════════
+const CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function randChar(){return CHARS[Math.floor(Math.random()*CHARS.length)];}
+function randSeq(n){return Array.from({length:n},randChar).join('');}
+
+function openMinigame(target,onSuccess){
+  const mg=document.getElementById('minigame');
+  const games=['typing','reaction','binary','hash'];
+  const pick=games[Math.floor(Math.random()*games.length)];
+  mg.classList.add('active');
+  document.getElementById('mgTitle').textContent='SECURITY BYPASS REQUIRED';
+  document.getElementById('mgSubtitle').textContent=`target: ${target.toUpperCase()} | select minigame type: ${pick.toUpperCase()}`;
+  document.getElementById('mgStatus').textContent='';
+
+  const body=document.getElementById('mgBody');
+
+  if(pick==='typing') buildTypingGame(body,onSuccess);
+  else if(pick==='reaction') buildReactionGame(body,onSuccess);
+  else if(pick==='binary') buildBinaryGame(body,onSuccess);
+  else buildHashGame(body,onSuccess);
+}
+function closeMinigame(){
+  document.getElementById('minigame').classList.remove('active');
+  document.getElementById('mgBody').innerHTML='';
+  document.getElementById('mgStatus').textContent='';
+}
+function mgFail(msg){
+  document.getElementById('mgStatus').innerHTML=`<span class="mg-fail">✗ ${msg}</span>`;
+}
+function mgOk(msg){
+  document.getElementById('mgStatus').innerHTML=`<span class="mg-ok">✓ ${msg}</span>`;
+}
+
+// ── 1. Typing challenge: type 3 random 6-char sequences ──────────
+function buildTypingGame(body,onSuccess){
+  const seqs=[randSeq(6),randSeq(6),randSeq(6)];
+  let current=0;
+  function render(){
+    body.innerHTML=`
+      <div style="font-size:11px;color:var(--muted);margin-bottom:.5rem">type the sequence exactly — ${3-current} remaining</div>
+      <div class="mg-progress">${seqs.map((_,i)=>`<div class="mg-dot${i<current?' done':''}" ></div>`).join('')}</div>
+      <div class="mg-target">${seqs[current]}</div>
+      <div class="mg-input-row">
+        <input class="mg-input" id="mgInp" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="6" placeholder="______" />
+        <button class="mg-btn" id="mgSubmit">SEND</button>
+      </div>`;
+    const inp=document.getElementById('mgInp');
+    inp.focus();
+    function submit(){
+      const val=inp.value.toUpperCase().trim();
+      if(val===seqs[current]){
+        current++;
+        if(current>=3){mgOk('ACCESS GRANTED');setTimeout(()=>{closeMinigame();onSuccess();},600);}
+        else{mgOk(`sequence ${current}/3 correct`);setTimeout(render,400);}
+      } else {
+        mgFail('incorrect sequence — ddos aborted');
+        setTimeout(closeMinigame,1200);
+      }
+    }
+    document.getElementById('mgSubmit').onclick=submit;
+    inp.onkeydown=e=>{if(e.key==='Enter')submit();if(e.key==='Escape'){closeMinigame();}};
+  }
+  render();
+}
+
+// ── 2. Reaction test: hit SPACE the instant it goes green (3 rounds) ─
+function buildReactionGame(body,onSuccess){
+  let round=0,waiting=false,rTimer=null,passed=0;
+  function render(){
+    body.innerHTML=`
+      <div style="font-size:11px;color:var(--muted);margin-bottom:.5rem">hit SPACE the instant the box turns green — ${3-round} rounds</div>
+      <div class="mg-progress">${Array.from({length:3},(_,i)=>`<div class="mg-dot${i<passed?' done':i<round-passed?' fail':''}"></div>`).join('')}</div>
+      <div class="mg-react-box" id="reactBox" tabindex="0">waiting...</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:.5rem">press SPACE or click when green</div>`;
+    const box=document.getElementById('reactBox');
+    const delay=1200+Math.random()*2000;
+    waiting=false;
+    rTimer=setTimeout(()=>{
+      box.classList.add('go');
+      box.textContent='NOW!';
+      waiting=true;
+      const deadline=setTimeout(()=>{
+        if(waiting){missed();}
+      },600);
+      box._deadline=deadline;
+    },delay);
+    function hit(){
+      if(!waiting){mgFail('too early — ddos aborted');clearTimeout(rTimer);setTimeout(closeMinigame,1200);return;}
+      clearTimeout(box._deadline);
+      waiting=false;passed++;round++;
+      box.classList.remove('go');box.textContent='✓';
+      if(round>=3){mgOk('ACCESS GRANTED');setTimeout(()=>{closeMinigame();onSuccess();},600);}
+      else setTimeout(render,500);
+    }
+    function missed(){
+      waiting=false;round++;
+      box.classList.remove('go');box.classList.add('miss');box.textContent='MISSED';
+      mgFail('reaction too slow — ddos aborted');
+      setTimeout(closeMinigame,1200);
+    }
+    box.onclick=hit;
+    box._spaceHit=hit;
+  }
+  // global space listener for this game
+  const spaceHandler=e=>{
+    if(e.code==='Space'||e.key===' '){
+      e.preventDefault();
+      const box=document.getElementById('reactBox');
+      if(box&&box._spaceHit)box._spaceHit();
+    }
+    if(e.key==='Escape')closeMinigame();
+  };
+  document.addEventListener('keydown',spaceHandler);
+  const origClose=closeMinigame;
+  window._mgCleanup=()=>document.removeEventListener('keydown',spaceHandler);
+  render();
+}
+
+// ── 3. Binary puzzle: flip bits to match target value ─────────────
+function buildBinaryGame(body,onSuccess){
+  const target=Math.floor(Math.random()*128)+64; // 6-7 bit number
+  const bits=Array(8).fill(0);
+  function render(){
+    const val=bits.reduce((acc,b,i)=>acc+(b<<(7-i)),0);
+    body.innerHTML=`
+      <div style="font-size:11px;color:var(--muted);margin-bottom:.5rem">flip the bits to match the target value. click to toggle.</div>
+      <div style="text-align:center;margin:.5rem 0;font-size:13px;color:var(--amber)">target: <span style="font-size:20px;font-weight:700">${target}</span></div>
+      <div class="mg-bits">${bits.map((b,i)=>`<div class="mg-bit ${b?'on':'off'}" data-i="${i}">${b}</div>`).join('')}</div>
+      <div style="text-align:center;font-size:13px;color:var(--muted)">current value: <span style="color:${val===target?'var(--accent)':'var(--text)'};font-weight:700">${val}</span></div>
+      <div style="margin-top:1rem"><button class="mg-btn" id="mgCheck">CHECK</button></div>`;
+    body.querySelectorAll('.mg-bit').forEach(el=>{
+      el.onclick=()=>{
+        const i=parseInt(el.dataset.i);
+        bits[i]=bits[i]?0:1;
+        render();
+      };
+    });
+    document.getElementById('mgCheck').onclick=()=>{
+      if(val===target){mgOk('ACCESS GRANTED');setTimeout(()=>{closeMinigame();onSuccess();},600);}
+      else{mgFail(`${val} ≠ ${target} — ddos aborted`);setTimeout(closeMinigame,1200);}
+    };
+  }
+  render();
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMinigame();},{once:true});
+}
+
+// ── 4. Hash crack: guess the 4-digit code in 5 attempts ───────────
+function buildHashGame(body,onSuccess){
+  const code=Math.floor(1000+Math.random()*9000).toString();
+  let attempts=0;const MAX=5;
+  const history=[];
+  function bulls(guess,secret){let b=0;for(let i=0;i<4;i++)if(guess[i]===secret[i])b++;return b;}
+  function cows(guess,secret){let c=0;for(let i=0;i<4;i++)if(guess[i]!==secret[i]&&secret.includes(guess[i]))c++;return c;}
+  function render(){
+    body.innerHTML=`
+      <div style="font-size:11px;color:var(--muted);margin-bottom:.5rem">crack the 4-digit code — ${MAX-attempts} attempts remaining</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:.75rem">● = correct digit & position  ○ = correct digit wrong position</div>
+      <div style="margin-bottom:.75rem;min-height:60px;font-size:12px">${history.map(h=>`<div style="color:var(--text)">${h.guess}  <span style="color:var(--amber)">${'●'.repeat(h.b)}${'○'.repeat(h.c)}</span></div>`).join('')}</div>
+      <div class="mg-input-row">
+        <input class="mg-input" id="mgInp" type="tel" maxlength="4" placeholder="____" autocomplete="off" />
+        <button class="mg-btn" id="mgSubmit">TRY</button>
+      </div>`;
+    const inp=document.getElementById('mgInp');inp.focus();
+    function submit(){
+      const val=inp.value.trim();
+      if(!/^\d{4}$/.test(val)){mgFail('enter exactly 4 digits');return;}
+      attempts++;
+      const b=bulls(val,code),c=cows(val,code);
+      history.push({guess:val,b,c});
+      if(b===4){mgOk('ACCESS GRANTED — code cracked');setTimeout(()=>{closeMinigame();onSuccess();},600);return;}
+      if(attempts>=MAX){mgFail(`out of attempts — code was ${code} — ddos aborted`);setTimeout(closeMinigame,1500);return;}
+      render();
+    }
+    document.getElementById('mgSubmit').onclick=submit;
+    inp.onkeydown=e=>{if(e.key==='Enter')submit();if(e.key==='Escape')closeMinigame();};
+  }
+  render();
+}
+
+// ── Live listeners ─────────────────────────────────────────────────
 function startLive(){
   if(liveUnsub)liveUnsub();
   liveUnsub=usersCol.onSnapshot(snap=>{
     snap.forEach(doc=>{allData[doc.id]=doc.data();});
-    const lbEl=document.getElementById('live-lb');
-    if(lbEl)lbEl.innerHTML=buildLbTable();
-    const podEl=document.getElementById('live-podium');
-    if(podEl)podEl.innerHTML=buildPodiumCells();
-    const clEl=document.getElementById('live-tasks');
-    if(clEl)clEl.innerHTML=buildChecklistHTML();
+    document.getElementById('live-lb')&&(document.getElementById('live-lb').innerHTML=buildLbTable());
+    document.getElementById('live-pod')&&(document.getElementById('live-pod').innerHTML=buildPodiumCells());
+    document.getElementById('live-tasks')&&(document.getElementById('live-tasks').innerHTML=buildChecklistHTML());
+    document.getElementById('live-boss')&&(document.getElementById('live-boss').innerHTML=buildBossCard());
+  });
+  if(bossUnsub)bossUnsub();
+  bossUnsub=bossCol.doc('current').onSnapshot(snap=>{
+    if(snap.exists){bossState=snap.data();updateTitleBoss();document.getElementById('live-boss')&&(document.getElementById('live-boss').innerHTML=buildBossCard());document.getElementById('live-lb')&&(document.getElementById('live-lb').innerHTML=buildLbTable());}
   });
 }
 
-// ── Output helpers ────────────────────────────────────────────────────────
+// ── Save ───────────────────────────────────────────────────────────
+async function saveUser(){if(!session.user)return;await usersCol.doc(session.user).set({tasks:allData[session.user].tasks},{merge:true});}
+
+// ── Output helpers ─────────────────────────────────────────────────
 const out=document.getElementById('out');
-function print(text='',cls=''){
-  const el=document.createElement('span');
-  el.className='line'+(cls?' '+cls:'');
-  el.innerHTML=text;
-  out.appendChild(el);
-  out.scrollTop=out.scrollHeight;
-  return el;
-}
+function print(text='',cls=''){const el=document.createElement('span');el.className='line'+(cls?' '+cls:'');el.innerHTML=text;out.appendChild(el);out.scrollTop=out.scrollHeight;return el;}
 function blank(){const el=document.createElement('span');el.className='line-blank';out.appendChild(el);}
-function printCmd(cmd){
-  // echo the command (show *** for password mode)
-  const display=session.mode==='password'?'*'.repeat(cmd.length):cmd;
-  const ps=document.getElementById('ps1').innerHTML;
-  print(`${document.getElementById('ps1u').textContent}@workpts:${document.getElementById('ps1p').textContent}$ ${display}`,'line-dim');
-}
+function printCmd(cmd){const disp=session.mode==='password'?'•'.repeat(cmd.length):cmd;print(`${document.getElementById('ps1u').textContent}@workpts:${document.getElementById('ps1p').textContent}$ ${disp}`,'line-dim');}
 function appendEl(el){out.appendChild(el);out.scrollTop=out.scrollHeight;}
 function clearOut(){out.innerHTML='';}
+function setPrompt(user,path){document.getElementById('ps1u').textContent=user||'guest';document.getElementById('ps1p').textContent=path||'~';document.getElementById('titleUser').textContent=user?`[${user}]`:'';}
 
-function setPrompt(user,path){
-  document.getElementById('ps1u').textContent=user||'guest';
-  document.getElementById('ps1p').textContent=path||'~';
-  document.getElementById('titleUser').textContent=user?`[${user}]`:'';
+function askPassword(prompt,cb){session.mode='password';passwordCallback=cb;_pwReal='';print(prompt,'line-dim');document.getElementById('cmdInput').value='';}
+function exitPasswordMode(){session.mode='cmd';passwordCallback=null;_pwReal='';document.getElementById('cmdInput').value='';}
+
+// ── Build helpers ──────────────────────────────────────────────────
+function buildBossCard(){
+  if(!bossState)return'<span class="line-dim"># no boss data</span>';
+  const boss=BOSSES.find(b=>b.id===bossState.bossId)||getBossForWeek();
+  const pct=Math.max(0,Math.round((bossState.hp/bossState.maxHp)*100));
+  const slain=bossState.hp<=0;
+  const damage=bossState.damage||{};
+  const totalDmg=Object.values(damage).reduce((a,b)=>a+b,0)||1;
+  const topDmg=Object.entries(damage).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const monTs=getMondayTs();const nextMon=monTs+7*24*60*60*1000;const daysLeft=Math.max(0,Math.ceil((nextMon-Date.now())/86400000));
+  let html=`<div class="boss-card${slain?' boss-slain':''}">`;
+  html+=`<div class="boss-name">${slain?'☠':' ☠'} ${boss.name}${slain?' — SLAIN':''}</div>`;
+  html+=`<div class="boss-desc">${boss.description}</div>`;
+  if(!slain){html+=`<div class="boss-hp-row"><div class="boss-hp-bar"><div class="boss-hp-fill" style="width:${pct}%"></div></div><div class="boss-hp-text">${bossState.hp.toLocaleString()} / ${bossState.maxHp.toLocaleString()} HP</div></div>`;html+=`<div class="boss-meta"><span>weakness: <span style="color:var(--amber)">${boss.weakness}</span></span><span>reward: <span style="color:var(--accent)">${boss.reward.toLocaleString()} pts</span></span><span>resets in: <span style="color:var(--red)">${daysLeft}d</span></span></div>`;}
+  else{html+=`<div class="boss-meta"><span style="color:var(--amber)">reward distributed ✓</span></div>`;}
+  if(topDmg.length){html+=`<div style="margin-top:8px;font-size:11px;color:var(--muted)">top damage:</div>`;topDmg.forEach(([u,d],i)=>{const contrib=Math.round((d/totalDmg)*100);const isMe=u===session.user;html+=`<div style="font-size:12px;margin-top:2px"><span style="color:${isMe?'var(--accent)':'var(--text)'}">${['①','②','③'][i]} ${u}</span><span style="color:var(--muted)"> — ${d.toLocaleString()} dmg (${contrib}%)</span></div>`;});}
+  if(boss.lore)html+=`<div style="margin-top:8px;font-size:11px;color:var(--muted);font-style:italic">"${boss.lore}"</div>`;
+  html+=`</div>`;return html;
+}
+function buildPodiumCells(){
+  const entries=Object.entries(allData).filter(([,d])=>d.passwordHash).map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length})).sort((a,b)=>b.points-a.points);
+  if(!entries.length)return'<span class="line-dim"># no participants yet</span>';
+  const top3=[entries[0],entries[1],entries[2]];
+  const order=[1,0,2],syms=['  2nd','★ 1st','  3rd'],pCls=['p2','p1','p3'],pColors=['#c0c0c0','var(--amber)','#cd7f32'];
+  let html='<div class="podium">';
+  order.forEach((ri,ci)=>{const e=top3[ri];if(!e){html+='<div class="pc"></div>';return;}const isMe=e.name===session.user;html+=`<div class="pc ${pCls[ci]}"><div style="font-size:12px;color:${pColors[ci]};margin-bottom:3px">${syms[ci]}</div><div class="pc-name">${e.name}${isMe?' ◆':''}</div><div class="pc-pts">${e.points.toLocaleString()}</div><div class="pc-tasks">${e.done}/${e.tasks} done</div></div>`;});
+  html+='</div>';return html;
+}
+function buildChecklistHTML(){
+  if(!session.user)return'';
+  const tasks=allData[session.user]?.tasks||[];
+  const total=calcPoints(tasks);
+  const doneCount=tasks.filter(t=>t.done).length;
+  let html=`<span class="line-dim" style="display:block;margin-bottom:6px"># total: ${total} pts | ${doneCount}/${tasks.length} completed</span>`;
+  if(!tasks.length)return html+'<span class="line-dim">no tasks yet — use: add &lt;task name&gt; [units] [difficulty]</span>';
+  html+='<div class="checklist">';
+  tasks.forEach((t,i)=>{const pts=taskPts(t,tasks);const dc=DIFF_CLS[String(t.diff)]||'d-easy';const dl=DIFF_LABELS[String(t.diff)]||'easy';const action=t.done?`uncheck ${i+1}`:`check ${i+1}`;html+=`<div class="check-row" onclick="runCmd('${action}')"><div class="cb${t.done?' checked':''}">${t.done?'✓':''}</div><span class="line-dim" style="font-size:11px;flex-shrink:0">[${String(i+1).padStart(2,'0')}]</span><span class="check-name${t.done?' done':''}">${t.name}</span><span class="check-diff ${dc}">${dl}</span><span class="line-dim" style="font-size:11px">x${t.units}</span><span class="check-pts">${t.done?pts:'+'+pts} pts</span></div>`;});
+  html+='</div>';return html;
+}
+function buildLbTable(){
+  const entries=Object.entries(allData).filter(([,d])=>d.passwordHash).map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length,dmg:(bossState?.damage||{})[n]||0})).sort((a,b)=>b.points-a.points);
+  const maxPts=entries[0]?.points||1;
+  let t=`<table class="t-table"><thead><tr><th>rank</th><th>user</th><th>pts</th><th>boss dmg</th><th>progress</th></tr></thead><tbody>`;
+  entries.forEach((e,i)=>{const isMe=e.name===session.user;const pct=Math.round((e.points/maxPts)*100);const rc=i<3?` r${i+1}`:'';t+=`<tr class="${isMe?'me':''}"><td><span class="rb${rc}">${i<3?['#1','#2','#3'][i]:`#${i+1}`}</span></td><td><span style="color:${isMe?'var(--accent)':'var(--text)'};font-weight:${isMe?700:400}">${e.name}${isMe?' ◆':''}</span></td><td><span style="color:var(--accent);font-weight:700">${e.points.toLocaleString()}</span></td><td style="color:var(--red)">${e.dmg?e.dmg.toLocaleString():'-'}</td><td>${progBar(pct)}</td></tr>`;});
+  t+=`</tbody></table>`;return t;
 }
 
-// ── Password mode ─────────────────────────────────────────────────────────
-let _pwReal=''; // actual password chars when in password mode
-function askPassword(prompt,cb){
-  session.mode='password';
-  passwordCallback=cb;
-  _pwReal='';
-  print(prompt,'line-dim');
-  const inp=document.getElementById('cmdInput');
-  inp.value='';
-  inp.setAttribute('data-masking','true');
-}
-function exitPasswordMode(){
-  session.mode='cmd';
-  passwordCallback=null;
-  _pwReal='';
-  const inp=document.getElementById('cmdInput');
-  inp.value='';
-  inp.removeAttribute('data-masking');
-}
-
-// ── Commands ──────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// COMMANDS
+// ══════════════════════════════════════════════════════════════════
 const COMMANDS={
-
   help(){
     blank();
-    print('available commands:','line-dim');
-    blank();
+    print('available commands:','line-dim');blank();
     const cmds=[
-      ['register &lt;name&gt;','create a new account'],
-      ['login &lt;name&gt;',    'login to your account'],
-      ['logout',            'end your session'],
-      ['leaderboard',       'show live rankings (alias: lb)'],
-      ['tasks',             'view and manage your task list'],
-      ['add &lt;name&gt; [units] [difficulty]','add a task  (diff: easy/medium/hard/expert)'],
-      ['check &lt;#&gt;',       'check off a task by number'],
-      ['uncheck &lt;#&gt;',     'uncheck a task'],
-      ['rm &lt;#&gt;',          'remove a task'],
-      ['theme &lt;name&gt;',     'set color theme: green, red, blue, black'],
-      ['clear',             'clear the terminal'],
-      ['help',              'show this message'],
+      ['register &lt;name&gt;',            'create a new account'],
+      ['login &lt;name&gt;',               'login'],
+      ['logout',                          'end session'],
+      ['leaderboard',                     'live rankings (alias: lb)'],
+      ['tasks',                           'view & manage your tasks'],
+      ['boss',                            'weekly boss status'],
+      ['ddos &lt;username&gt;',            'launch DDoS attack (once per day)'],
+      ['add &lt;name&gt; [units] [diff]',  'add a task'],
+      ['check &lt;#&gt;',                  'complete a task — deals boss damage'],
+      ['uncheck &lt;#&gt;',               'uncheck a task'],
+      ['rm &lt;#&gt;',                    'remove a task'],
+      ['theme &lt;name&gt;',              'green | red | blue | black'],
+      ['clear',                           'clear terminal'],
+      ['help',                            'this message'],
     ];
-    cmds.forEach(([cmd,desc])=>{
-      print(`  <span style="color:var(--accent)">${cmd.padEnd(38)}</span><span class="line-dim">${desc}</span>`);
-    });
+    cmds.forEach(([cmd,desc])=>{print(`  <span style="color:var(--accent)">${cmd.padEnd(36)}</span><span class="line-dim">${desc}</span>`);});
     blank();
   },
 
   async register(args){
     const name=(args[0]||'').trim();
     if(!name){print('usage: register &lt;username&gt;','line-err');return;}
-    if(allData[name]){print(`error: user "${name}" already exists — use: login ${name}`,'line-err');return;}
-    blank();
-    print(`registering new user: <span style="color:var(--accent)">${name}</span>`,'line-dim');
+    if(allData[name]){print(`error: "${name}" already exists — use: login ${name}`,'line-err');return;}
+    blank();print(`registering: <span style="color:var(--accent)">${name}</span>`,'line-dim');
     askPassword('enter a password: ',async(pw1)=>{
       if(!pw1){print('error: password cannot be empty','line-err');exitPasswordMode();return;}
       askPassword('confirm password:  ',async(pw2)=>{
@@ -334,13 +811,9 @@ const COMMANDS={
         const hash=await sha256(pw1);
         allData[name]={tasks:[],passwordHash:hash};
         await usersCol.doc(name).set({tasks:[],passwordHash:hash});
-        session.user=name;
-        setPrompt(name,'~/tasks');
-        exitPasswordMode();
-        blank();
-        print(`[OK] registered and logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
-        print('type "tasks" to manage your task list, "help" for all commands','line-dim');
-        blank();
+        session.user=name;setPrompt(name,'~/tasks');exitPasswordMode();
+        blank();print(`[OK] logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');blank();
+        startDdosListener();
       });
     });
   },
@@ -348,80 +821,76 @@ const COMMANDS={
   async login(args){
     const name=(args[0]||'').trim();
     if(!name){print('usage: login &lt;username&gt;','line-err');return;}
-    if(!allData[name]){print(`error: user "${name}" not found — use: register ${name}`,'line-err');return;}
+    if(!allData[name]){print(`error: "${name}" not found — use: register ${name}`,'line-err');return;}
     blank();
     askPassword(`password for ${name}: `,async(pw)=>{
       const hash=await sha256(pw);
-      if(hash!==allData[name].passwordHash){
-        print('error: incorrect password','line-err');
-        exitPasswordMode();blank();return;
-      }
-      session.user=name;
-      setPrompt(name,'~/tasks');
-      exitPasswordMode();
-      blank();
-      print(`[OK] logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
-      print('type "tasks" to manage your task list, "help" for all commands','line-dim');
-      blank();
+      if(hash!==allData[name].passwordHash){print('error: incorrect password','line-err');exitPasswordMode();blank();return;}
+      session.user=name;setPrompt(name,'~/tasks');exitPasswordMode();
+      blank();print(`[OK] logged in as <span style="color:var(--accent)">${name}</span>`,'line-ok');
+      print('type "boss" · "tasks" · "ddos &lt;user&gt;" to attack','line-dim');blank();
+      startDdosListener();
+      // check if already stunned
+      const snap=await ddosCol.doc(name).get();
+      if(snap.exists)checkStunState(snap.data());
     });
   },
 
   logout(){
     if(!session.user){print('not logged in','line-err');return;}
-    const u=session.user;
-    session.user=null;
-    setPrompt('guest','~');
-    blank();
-    print(`[OK] logged out ${u}`,'line-ok');
-    blank();
+    const u=session.user;session.user=null;setPrompt('guest','~');
+    if(ddosUnsub){ddosUnsub();ddosUnsub=null;}
+    removeStunVisuals();
+    blank();print(`[OK] logged out ${u}`,'line-ok');blank();
   },
 
-  leaderboard(){
+  async ddos(args){
+    if(!session.user){print('not logged in','line-err');return;}
+    const target=(args[0]||'').trim();
+    if(!target){print('usage: ddos &lt;username&gt;','line-err');return;}
+    if(target===session.user){print('error: cannot ddos yourself','line-err');return;}
+    if(!allData[target]||!allData[target].passwordHash){print(`error: user "${target}" not found`,'line-err');return;}
+    // check cooldown first before opening minigame
+    const coolSnap=await ddosCol.doc(`cd_${session.user}`).get();
+    if(coolSnap.exists){
+      const lastMs=coolSnap.data().lastDdos||0;
+      const todayStart=new Date();todayStart.setHours(0,0,0,0);
+      if(lastMs>=todayStart.getTime()){
+        const nextReset=new Date(todayStart.getTime()+86400000);
+        const diff=nextReset-Date.now();
+        const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000);
+        print(`error: ddos cooldown active — resets in ${h}h ${m}m`,'line-err');blank();return;
+      }
+    }
     blank();
-    print('<span class="line-dim"># ── live leaderboard ─────────────────────────────</span>');
-    // podium wrapper with stable id so live listener can update it
-    const podWrap=document.createElement('div');podWrap.id='live-podium';
-    podWrap.innerHTML=buildPodiumCells();
-    appendEl(podWrap);
-    // table wrapper with stable id
-    const wrap=document.createElement('div');wrap.id='live-lb';
-    wrap.innerHTML=buildLbTable();
-    appendEl(wrap);
-    blank();
+    print(`initiating attack on <span style="color:var(--red)">${target}</span>...`,'line-dim');
+    print('launching security bypass minigame...','line-dim');blank();
+    openMinigame(target,()=>executeDdos(target));
   },
+
+  boss(){blank();print('<span class="line-dim"># ── weekly boss ────────────────────────────</span>');const wrap=document.createElement('div');wrap.id='live-boss';wrap.innerHTML=buildBossCard();appendEl(wrap);blank();},
+
+  leaderboard(){blank();print('<span class="line-dim"># ── live leaderboard ───────────────────────</span>');const pod=document.createElement('div');pod.id='live-pod';pod.innerHTML=buildPodiumCells();appendEl(pod);const wrap=document.createElement('div');wrap.id='live-lb';wrap.innerHTML=buildLbTable();appendEl(wrap);blank();},
 
   tasks(){
     if(!session.user){print('not logged in — use: login &lt;name&gt;','line-err');return;}
-    const tasks=allData[session.user]?.tasks||[];
-    blank();
-    print(`<span class="line-dim"># ── task list for <span style="color:var(--accent)">${session.user}</span> ─────────────────</span>`);
-    print('<span class="line-dim"># use "check &lt;#&gt;" to complete a task, click a row, or "add &lt;name&gt;" to add one</span>');
-    blank();
-    const clWrap=document.createElement('div');clWrap.id='live-tasks';
-    clWrap.innerHTML=buildChecklistHTML();
-    appendEl(clWrap);
-    blank();
+    blank();print(`<span class="line-dim"># ── tasks: <span style="color:var(--accent)">${session.user}</span> ─────────────────────</span>`);print('<span class="line-dim"># click row or "check &lt;#&gt;" to complete</span>');blank();
+    const wrap=document.createElement('div');wrap.id='live-tasks';wrap.innerHTML=buildChecklistHTML();appendEl(wrap);blank();
   },
 
   async add(args){
     if(!session.user){print('not logged in','line-err');return;}
     if(!args.length){print('usage: add &lt;task name&gt; [units] [difficulty]','line-err');return;}
-    // parse trailing number and difficulty
-    let name=args.join(' ');
-    let units=1,diff='1';
-    // check last arg for difficulty
-    const lastArg=args[args.length-1].toLowerCase();
-    if(DIFF_VALS[lastArg]!==undefined){diff=String(DIFF_VALS[lastArg]);args.pop();name=args.join(' ');}
-    // check new last arg for units
-    const maybeUnits=parseInt(args[args.length-1]);
-    if(!isNaN(maybeUnits)&&maybeUnits>0){units=maybeUnits;args.pop();name=args.join(' ');}
-    name=name.trim();
-    if(!name){print('error: task name is required','line-err');return;}
+    let arr=[...args],units=1,diff='1';
+    const last=arr[arr.length-1].toLowerCase();
+    if(DIFF_VALS[last]!==undefined){diff=String(DIFF_VALS[last]);arr.pop();}
+    const mu=parseInt(arr[arr.length-1]);
+    if(!isNaN(mu)&&mu>0){units=mu;arr.pop();}
+    const name=arr.join(' ').trim();
+    if(!name){print('error: task name required','line-err');return;}
     allData[session.user].tasks.push({name,units,diff,done:false,ts:Date.now()});
-    await usersCol.doc(session.user).set({tasks:allData[session.user].tasks},{merge:true});
-    blank();
-    print(`[OK] added: <span style="color:var(--accent)">${name}</span> <span class="line-dim">(${DIFF_LABELS[diff]||'easy'}, ${units} unit${units!==1?'s':''})</span>`,'line-ok');
-    blank();
+    await saveUser();blank();
+    print(`[OK] added: <span style="color:var(--accent)">${name}</span> <span class="line-dim">(${DIFF_LABELS[diff]||'easy'}, ${units}u)</span>`,'line-ok');blank();
     COMMANDS.tasks();
   },
 
@@ -429,243 +898,98 @@ const COMMANDS={
     if(!session.user){print('not logged in','line-err');return;}
     const idx=parseInt(args[0])-1;
     const tasks=allData[session.user]?.tasks||[];
-    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found — use "tasks" to see your list`,'line-err');return;}
-    if(tasks[idx].done){print(`task #${args[0]} is already done — use "uncheck ${args[0]}" to undo`,'line-dim');return;}
-    tasks[idx].done=true;
-    await usersCol.doc(session.user).set({tasks},{merge:true});
-    const pts=taskPts(tasks[idx],true,tasks);
-    blank();
-    print(`[✓] <span style="color:var(--accent)">${tasks[idx].name}</span> — earned <span style="color:var(--amber);font-weight:700">+${pts} pts</span>`,'line-ok');
-    blank();
-    COMMANDS.tasks();
+    if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
+    if(tasks[idx].done){print(`task #${args[0]} already done — use "uncheck ${args[0]}" to undo`,'line-dim');return;}
+    tasks[idx].done=true;await saveUser();
+    const pts=taskPts(tasks[idx],tasks);
+    await dealDamage(pts);
+    blank();const bossHp=bossState?.hp??null;
+    print(`[✓] <span style="color:var(--accent)">${tasks[idx].name}</span> — <span style="color:var(--amber)">+${pts} pts</span> / <span style="color:var(--red)">-${pts} boss HP</span>${bossHp!==null?` <span class="line-dim">| boss: ${bossHp.toLocaleString()} HP</span>`:''}`,'line-ok');
+    blank();COMMANDS.tasks();
   },
 
   async uncheck(args){
     if(!session.user){print('not logged in','line-err');return;}
-    const idx=parseInt(args[0])-1;
-    const tasks=allData[session.user]?.tasks||[];
+    const idx=parseInt(args[0])-1;const tasks=allData[session.user]?.tasks||[];
     if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
     if(!tasks[idx].done){print(`task #${args[0]} is not checked`,'line-dim');return;}
-    tasks[idx].done=false;
-    await usersCol.doc(session.user).set({tasks},{merge:true});
-    blank();
-    print(`[OK] unchecked: <span style="color:var(--amber)">${tasks[idx].name}</span>`,'line-ok');
-    blank();
-    COMMANDS.tasks();
+    tasks[idx].done=false;await saveUser();
+    blank();print(`[OK] unchecked: <span style="color:var(--amber)">${tasks[idx].name}</span>`,'line-ok');blank();COMMANDS.tasks();
   },
 
   async rm(args){
     if(!session.user){print('not logged in','line-err');return;}
-    const idx=parseInt(args[0])-1;
-    const tasks=allData[session.user]?.tasks||[];
+    const idx=parseInt(args[0])-1;const tasks=allData[session.user]?.tasks||[];
     if(isNaN(idx)||idx<0||idx>=tasks.length){print(`error: task #${args[0]} not found`,'line-err');return;}
-    const name=tasks[idx].name;
-    tasks.splice(idx,1);
-    await usersCol.doc(session.user).set({tasks},{merge:true});
-    blank();
-    print(`[OK] removed: ${name}`,'line-ok');
-    blank();
-    COMMANDS.tasks();
+    const name=tasks[idx].name;tasks.splice(idx,1);await saveUser();
+    blank();print(`[OK] removed: ${name}`,'line-ok');blank();COMMANDS.tasks();
   },
 
   theme(args){
-    const name=(args[0]||'').toLowerCase();
-    const valid=['green','red','blue','black'];
-    if(!name||!valid.includes(name)){
-      print('usage: theme &lt;name&gt;','line-err');
-      print('available themes: '+valid.map(t=>`<span style="color:var(--accent)">${t}</span>`).join('  '));
-      blank();return;
-    }
-    document.documentElement.setAttribute('data-theme',name);
-    localStorage.setItem('wp_theme',name);
-    blank();
-    print(`[OK] theme set to <span style="color:var(--accent)">${name}</span>`,'line-ok');
-    blank();
+    const name=(args[0]||'').toLowerCase();const valid=['green','red','blue','black'];
+    if(!valid.includes(name)){print('usage: theme &lt;name&gt;','line-err');print('available: '+valid.map(t=>`<span style="color:var(--accent)">${t}</span>`).join('  '));blank();return;}
+    document.documentElement.setAttribute('data-theme',name);localStorage.setItem('wp_theme',name);
+    blank();print(`[OK] theme → <span style="color:var(--accent)">${name}</span>`,'line-ok');blank();
   },
 
   clear(){clearOut();}
 };
 
-function buildPodiumCells(){
-  const entries=Object.entries(allData)
-    .filter(([,d])=>d.passwordHash)
-    .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
-    .sort((a,b)=>b.points-a.points);
-  if(!entries.length) return '<span class="line-dim"># no participants yet</span>';
-  const top3=[entries[0],entries[1],entries[2]];
-  const order=[1,0,2],syms=['  2nd','★ 1st','  3rd'],pCls=['p2','p1','p3'],pColors=['#c0c0c0','var(--amber)','#cd7f32'];
-  let html='<div class="podium">';
-  order.forEach((ri,ci)=>{
-    const e=top3[ri];
-    if(!e){html+='<div class="pc"></div>';return;}
-    const isMe=e.name===session.user;
-    html+=`<div class="pc ${pCls[ci]}">
-      <div class="pc-sym" style="color:${pColors[ci]}">${syms[ci]}</div>
-      <div class="pc-name">${e.name}${isMe?' ◆':''}</div>
-      <div class="pc-pts">${e.points.toLocaleString()}</div>
-      <div class="pc-tasks">${e.done}/${e.tasks} done</div>
-    </div>`;
-  });
-  html+='</div>';
-  return html;
-}
-
-function buildChecklistHTML(){
-  if(!session.user) return '';
-  const tasks=allData[session.user]?.tasks||[];
-  const total=calcPoints(tasks);
-  const doneCount=tasks.filter(t=>t.done).length;
-  let html=`<span class="line-dim" style="display:block;margin-bottom:6px"># total: ${total} pts | ${doneCount}/${tasks.length} completed</span>`;
-  if(!tasks.length) return html+'<span class="line-dim">no tasks yet — add one with: add &lt;task name&gt; [units] [difficulty]</span>';
-  html+='<div class="checklist">';
-  tasks.forEach((t,i)=>{
-    const pts=taskPts(t,t.done,tasks);
-    const dc=DIFF_CLS[String(t.diff)]||'d-easy';
-    const dl=DIFF_LABELS[String(t.diff)]||'easy';
-    const action=t.done?`uncheck ${i+1}`:`check ${i+1}`;
-    html+=`<div class="check-row" onclick="runCmd('${action}')">
-      <div class="cb${t.done?' checked':''}">${t.done?'✓':''}</div>
-      <span class="line-dim" style="font-size:11px;flex-shrink:0">[${String(i+1).padStart(2,'0')}]</span>
-      <span class="check-name${t.done?' done':''}">${t.name}</span>
-      <span class="check-diff ${dc}">${dl}</span>
-      <span class="line-dim" style="font-size:11px">x${t.units}</span>
-      <span class="check-pts">${t.done?pts:'+'+pts} pts</span>
-    </div>`;
-  });
-  html+='</div>';
-  return html;
-}
-
-function buildLbTable(entries,maxPts){
-  entries=entries||Object.entries(allData)
-    .filter(([,d])=>d.passwordHash)
-    .map(([n,d])=>({name:n,points:calcPoints(d.tasks),tasks:(d.tasks||[]).length,done:(d.tasks||[]).filter(t=>t.done).length}))
-    .sort((a,b)=>b.points-a.points);
-  maxPts=maxPts||entries[0]?.points||1;
-  let t=`<table class="t-table"><thead><tr><th>rank</th><th>user</th><th>pts</th><th>done/total</th><th>progress</th></tr></thead><tbody>`;
-  entries.forEach((e,i)=>{
-    const isMe=e.name===session.user;
-    const pct=Math.round((e.points/(maxPts||1))*100);
-    const rc=i<3?` r${i+1}`:'';
-    t+=`<tr class="${isMe?'me':''}">
-      <td><span class="rb${rc}">${i<3?['#1','#2','#3'][i]:`#${i+1}`}</span></td>
-      <td><span style="color:${isMe?'var(--accent)':'var(--text)'};font-weight:${isMe?700:400}">${e.name}${isMe?' ◆':''}</span></td>
-      <td><span style="color:var(--accent);font-weight:700">${e.points.toLocaleString()}</span></td>
-      <td class="line-dim">${e.done}/${e.tasks}</td>
-      <td>${progBar(pct)}</td>
-    </tr>`;
-  });
-  t+=`</tbody></table>`;
-  return t;
-}
-
-// ── Input handler ─────────────────────────────────────────────────────────
+// ── Input ──────────────────────────────────────────────────────────
 async function runCmd(raw){
   const input=raw.trim();
-  printCmd(input);
-  if(!input)return;
-
-  if(session.mode==='password'){
-    if(passwordCallback){const cb=passwordCallback;passwordCallback=null;await cb(input);}
-    return;
-  }
-
+  printCmd(input);if(!input)return;
+  if(session.mode==='password'){if(passwordCallback){const cb=passwordCallback;passwordCallback=null;await cb(input);}return;}
   if(input){cmdHistory.unshift(input);if(cmdHistory.length>50)cmdHistory.pop();}
   histIdx=-1;draftCmd='';
-
-  const [cmd,...args]=input.split(/\s+/);
-  const aliases={'lb':'leaderboard','t':'tasks','h':'help'};
+  const[cmd,...args]=input.split(/\s+/);
+  const aliases={'lb':'leaderboard','t':'tasks','h':'help','b':'boss'};
   const resolved=aliases[cmd.toLowerCase()]||cmd.toLowerCase();
   const fn=COMMANDS[resolved];
   if(fn)await fn(args);
-  else{
-    print(`bash: ${resolved}: command not found — type "help" for available commands`,'line-err');
-    blank();
-  }
+  else{print(`bash: ${resolved}: command not found — type "help"`,'line-err');blank();}
 }
 
 const inp=document.getElementById('cmdInput');
 inp.addEventListener('keydown',async e=>{
-  // intercept all input when masking passwords
   if(inp.getAttribute('data-masking')){
-    if(e.key==='Enter'){
-      e.preventDefault();
-      const real=_pwReal;
-      inp.value='';_pwReal='';
-      await runCmd(real);
-      return;
-    }
-    if(e.key==='Backspace'||e.key==='Delete'){
-      e.preventDefault();
-      _pwReal=_pwReal.slice(0,-1);
-      inp.value='•'.repeat(_pwReal.length);
-      return;
-    }
-    if(e.key==='c'&&e.ctrlKey){
-      e.preventDefault();exitPasswordMode();print('^C','line-dim');blank();return;
-    }
-    if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){
-      e.preventDefault();
-      _pwReal+=e.key;
-      inp.value='•'.repeat(_pwReal.length);
-    }
+    if(e.key==='Enter'){e.preventDefault();const real=_pwReal;inp.value='';_pwReal='';await runCmd(real);return;}
+    if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();_pwReal=_pwReal.slice(0,-1);inp.value='•'.repeat(_pwReal.length);return;}
+    if(e.key==='c'&&e.ctrlKey){e.preventDefault();exitPasswordMode();print('^C','line-dim');blank();return;}
+    if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){e.preventDefault();_pwReal+=e.key;inp.value='•'.repeat(_pwReal.length);}
     return;
   }
-  if(e.key==='Enter'){
-    e.preventDefault();
-    const val=inp.value;
-    inp.value='';
-    await runCmd(val);
-  }
-  else if(e.key==='ArrowUp'&&session.mode==='cmd'){
-    e.preventDefault();
-    if(histIdx===-1)draftCmd=inp.value;
-    if(histIdx<cmdHistory.length-1){histIdx++;inp.value=cmdHistory[histIdx];}
-    inp.setSelectionRange(inp.value.length,inp.value.length);
-  }
-  else if(e.key==='ArrowDown'&&session.mode==='cmd'){
-    e.preventDefault();
-    if(histIdx>0){histIdx--;inp.value=cmdHistory[histIdx];}
-    else if(histIdx===0){histIdx=-1;inp.value=draftCmd;}
-    inp.setSelectionRange(inp.value.length,inp.value.length);
-  }
+  if(e.key==='Enter'){e.preventDefault();const val=inp.value;inp.value='';await runCmd(val);}
+  else if(e.key==='ArrowUp'){e.preventDefault();if(histIdx===-1)draftCmd=inp.value;if(histIdx<cmdHistory.length-1){histIdx++;inp.value=cmdHistory[histIdx];}inp.setSelectionRange(inp.value.length,inp.value.length);}
+  else if(e.key==='ArrowDown'){e.preventDefault();if(histIdx>0){histIdx--;inp.value=cmdHistory[histIdx];}else if(histIdx===0){histIdx=-1;inp.value=draftCmd;}inp.setSelectionRange(inp.value.length,inp.value.length);}
   else if(e.key==='l'&&e.ctrlKey){e.preventDefault();COMMANDS.clear();}
 });
-
-// keep input focused
-document.addEventListener('click',()=>inp.focus());
+document.addEventListener('click',()=>{if(!document.getElementById('minigame').classList.contains('active'))inp.focus();});
 inp.focus();
 
-// ── Boot ──────────────────────────────────────────────────────────────────
+// ── Boot ───────────────────────────────────────────────────────────
 async function boot(){
-  // load all users first
-  try{
-    const snap=await usersCol.get();
-    snap.forEach(doc=>{allData[doc.id]=doc.data();});
-  }catch(e){
-    print('error: could not connect to firebase — check your Firestore rules','line-err');
-    print(e.message,'line-dim');
-    blank();
-  }
-  // restore saved theme
   const savedTheme=localStorage.getItem('wp_theme');
   if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);
-  startLive();
-
+  try{
+    const[userSnap,bossSnap]=await Promise.all([usersCol.get(),bossCol.doc('current').get()]);
+    userSnap.forEach(doc=>{allData[doc.id]=doc.data();});
+    if(bossSnap.exists)bossState=bossSnap.data();
+  }catch(e){print('error: could not connect to firebase','line-err');print(e.message,'line-dim');blank();}
+  if(!bossState)await spawnNewBoss();
+  await checkWeeklyReset();
+  startLive();updateTitleBoss();
   print('<span style="color:var(--accent)"> __    __ ___  ____  __ __ ____  ____  _____</span>');
   print('<span style="color:var(--accent)"> \\ \\  / // _ \\|  _ \\|  |/ /|  _ \\|_  _|/ ___/</span>');
   print('<span style="color:var(--accent)">  \\ \\/ /| | | | |_) |     / | |_) | | | \\___ \\</span>');
   print('<span style="color:var(--accent)">   \\  / | |_| |  _ &lt;| |\\ \\ |  __/  | |  ___) |</span>');
   print('<span style="color:var(--accent)">    \\/   \\___/|_| \\_|_| \\_||_|    |___||____/ </span>');
-  blank();
-  print('work points tracker — firebase edition','line-dim');
-  print(`<span class="line-dim">${Object.keys(allData).filter(k=>allData[k].passwordHash).length} registered user(s) | ${new Date().toLocaleString()}</span>`);
-  blank();
-  print('type <span style="color:var(--accent)">help</span> for available commands');
-  print('type <span style="color:var(--accent)">register &lt;name&gt;</span> to create an account or <span style="color:var(--accent)">login &lt;name&gt;</span> to sign in');
-  blank();
+  blank();print('work points tracker v2.1','line-dim');
+  const boss=BOSSES.find(b=>b.id===bossState?.bossId)||getBossForWeek();
+  const pct=bossState?Math.round((bossState.hp/bossState.maxHp)*100):100;
+  print(`<span class="line-dim">${Object.keys(allData).filter(k=>allData[k].passwordHash).length} user(s) | boss: </span><span style="color:var(--red)">${boss.name} [${pct}% HP]</span>`);
+  blank();print('type <span style="color:var(--accent)">help</span> for commands · <span style="color:var(--accent)">ddos &lt;user&gt;</span> to attack');blank();
 }
-
 boot();
 </script>
 </body>
