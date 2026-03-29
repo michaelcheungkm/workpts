@@ -13,7 +13,15 @@
   --cyan:#4fffd4;--muted:#3a6640;--text:#b8f0c0;--border:#1e3a22;--border2:#2a5030;
   --font:'JetBrains Mono',monospace;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.5;}
+
+/* --- NEW: HACKER MODE OVERRIDES --- */
+body.hacker-mode {
+  --bg:#0a0000;--bg2:#120000;--green:#ff3333;--green-dim:#990000;
+  --green-faint:rgba(255,51,51,0.07);--amber:#ff8800;--red:#ff0000;
+  --cyan:#ff5500;--muted:#661a1a;--text:#ffb3b3;--border:#3a1111;--border2:#501a1a;
+}
+
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.5;transition: background 0.3s, color 0.3s;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.13) 2px,rgba(0,0,0,0.13) 4px);}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.45) 100%);}
 
@@ -80,11 +88,14 @@ select option{background:#0a0e0a;color:var(--text);}
 .p3 .podium-pts{color:#cd7f32;}
 .podium-tasks{font-size:11px;color:var(--muted);}
 
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--border);margin-bottom:1.5rem;background:var(--border);}
+/* --- NEW: UPDATED STATS ROW FOR STREAKS --- */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;border:1px solid var(--border);margin-bottom:1.5rem;background:var(--border);}
 .stat-cell{background:var(--bg2);padding:12px 14px;}
 .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
 .stat-val{font-size:20px;font-weight:700;color:var(--green);}
 .stat-val.dim{color:var(--text);}
+.streak-fire{color:var(--amber);animation: flicker 2s infinite;}
+@keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
 .task-entry{border-left:2px solid var(--border);padding:8px 0 8px 14px;margin-bottom:8px;transition:border-color 0.15s;}
 .task-entry:hover{border-left-color:var(--green-dim);}
@@ -111,7 +122,6 @@ select option{background:#0a0e0a;color:var(--text);}
 .cmd-form:focus-within{border-color:var(--green-dim);}
 .cmd-form input{border:none;flex:1;padding:0;}
 
-/* connecting screen */
 .connecting{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;padding:2rem 0;}
 .spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -147,8 +157,6 @@ select option{background:#0a0e0a;color:var(--text);}
 </div>
 
 <div class="terminal">
-
-  <!-- LEADERBOARD -->
   <div id="view-leaderboard">
     <div class="window">
       <div class="window-bar">
@@ -172,9 +180,7 @@ select option{background:#0a0e0a;color:var(--text);}
     </div>
   </div>
 
-  <!-- MY TASKS -->
   <div id="view-mytasks" style="display:none">
-
     <div id="gateView">
       <div class="window">
         <div class="window-bar">
@@ -218,6 +224,7 @@ select option{background:#0a0e0a;color:var(--text);}
             <div class="stat-cell"><div class="stat-label">total_pts</div><div class="stat-val">0</div></div>
             <div class="stat-cell"><div class="stat-label">tasks</div><div class="stat-val dim">0</div></div>
             <div class="stat-cell"><div class="stat-label">avg_pts</div><div class="stat-val dim">0</div></div>
+            <div class="stat-cell"><div class="stat-label">streak</div><div class="stat-val dim">0</div></div>
             <div class="stat-cell"><div class="stat-label">rank</div><div class="stat-val dim">—</div></div>
           </div>
         </div>
@@ -232,7 +239,7 @@ select option{background:#0a0e0a;color:var(--text);}
           <div style="display:grid;grid-template-columns:1fr 90px 180px auto;gap:12px;align-items:end;">
             <div>
               <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">--name</div>
-              <input type="text" id="newName" placeholder="task description..." maxlength="80" onkeydown="if(event.key==='Enter')addTask()" />
+              <input type="text" id="newName" placeholder="task desc or terminal command..." maxlength="80" onkeydown="if(event.key==='Enter')addTask()" />
             </div>
             <div>
               <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">--units</div>
@@ -274,7 +281,6 @@ select option{background:#0a0e0a;color:var(--text);}
 
 <div id="toast"></div>
 
-<!-- Firebase v9 compat (works as plain script tags, no bundler needed) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -299,24 +305,47 @@ let unsubscribe = null;
 const DIFF_LABELS = {'1':'easy','1.5':'medium','2.5':'hard','4':'expert'};
 const DIFF_CLS    = {'1':'d-easy','1.5':'d-medium','2.5':'d-hard','4':'d-expert'};
 
+// ── NEW: Streak Calculation ────────────────────────────────────────────────
+function calculateStreak(tasks) {
+  if (!tasks || tasks.length === 0) return 0;
+  let streak = 1;
+  // Sort tasks by timestamp descending
+  const sorted = [...tasks].sort((a,b) => b.ts - a.ts);
+  const ONE_DAY_MS = 86400000;
+  
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const diff = sorted[i].ts - sorted[i+1].ts;
+    if (diff <= ONE_DAY_MS) {
+      streak++;
+    } else {
+      break; // Streak broken
+    }
+  }
+  return streak;
+}
+
 // ── Scoring ────────────────────────────────────────────────────────────────
 function calcPoints(tasks) {
   let total = 0, hist = [];
+  const streak = calculateStreak(tasks);
+  const streakMultiplier = 1 + (streak * 0.05); // 5% bonus per streak level
+
   for (const t of tasks) {
     const base = t.units * parseFloat(t.diff) * 10;
     const avg = hist.length ? hist.reduce((a,b)=>a+b,0)/hist.length : null;
     const bonus = (avg !== null && base > avg) ? Math.round((base - avg) * 0.3) : 0;
     hist.push(base);
-    total += Math.round(base + bonus);
+    total += Math.round((base + bonus) * streakMultiplier);
   }
   return total;
 }
 function tPts(t, i, all) {
   const base = t.units * parseFloat(t.diff) * 10;
   const prior = all.slice(0, i);
-  if (!prior.length) return Math.round(base);
+  const streakMultiplier = 1 + (calculateStreak(all) * 0.05);
+  if (!prior.length) return Math.round(base * streakMultiplier);
   const avg = prior.map(x => x.units * parseFloat(x.diff) * 10).reduce((a,b)=>a+b,0) / prior.length;
-  return Math.round(base + (base > avg ? Math.round((base - avg) * 0.3) : 0));
+  return Math.round((base + (base > avg ? Math.round((base - avg) * 0.3) : 0)) * streakMultiplier);
 }
 function tBonus(t, i, all) {
   const base = t.units * parseFloat(t.diff) * 10;
@@ -432,6 +461,7 @@ function renderMyTasks() {
   if (!currentUser || !allData[currentUser]) return;
   const tasks = allData[currentUser].tasks || [];
   const totalPts = calcPoints(tasks);
+  const streak = calculateStreak(tasks);
   const sorted = Object.entries(allData)
     .map(([n,d]) => ({ n, pts: calcPoints(d.tasks||[]) }))
     .sort((a,b) => b.pts - a.pts);
@@ -442,6 +472,7 @@ function renderMyTasks() {
     <div class="stat-cell"><div class="stat-label">total_pts</div><div class="stat-val">${totalPts.toLocaleString()}</div></div>
     <div class="stat-cell"><div class="stat-label">tasks</div><div class="stat-val dim">${tasks.length}</div></div>
     <div class="stat-cell"><div class="stat-label">avg_pts</div><div class="stat-val dim">${avg}</div></div>
+    <div class="stat-cell"><div class="stat-label">streak</div><div class="stat-val ${streak > 2 ? 'streak-fire' : 'dim'}">${streak}🔥</div></div>
     <div class="stat-cell"><div class="stat-label">rank</div><div class="stat-val dim">#${rank||'—'}</div></div>`;
 
   const list = document.getElementById('tasksList');
@@ -519,12 +550,33 @@ async function deleteTask(i) {
   await saveUser();
   toast('[OK] task removed','ok');
 }
+
+// ── NEW: Command Interceptor in addTask ────────────────────────────────────
 async function addTask() {
   if (!currentUser) return;
   const name  = document.getElementById('newName').value.trim();
+  
+  // Easter Egg: Hacker Mode
+  if (name === 'sudo su') {
+    document.body.classList.toggle('hacker-mode');
+    toast('ROOT PRIVILEGES GRANTED', 'ok');
+    document.getElementById('newName').value = '';
+    return;
+  }
+
+  // Easter Egg: Clear command
+  if (name === 'clear') {
+    document.getElementById('tasksList').innerHTML = '';
+    document.getElementById('newName').value = '';
+    toast('Terminal cleared.', 'ok');
+    return;
+  }
+
   const units = parseInt(document.getElementById('newUnits').value) || 1;
   const diff  = document.getElementById('newDiff').value;
   if (!name) { toast('error: --name is required','err'); return; }
+  
+  // NOTE: We now log Date.now() as 'ts' to calculate the streaks
   allData[currentUser].tasks.push({ name, units, diff, ts: Date.now() });
   await saveUser();
   document.getElementById('newName').value  = '';
